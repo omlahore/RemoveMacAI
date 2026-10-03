@@ -75,10 +75,14 @@ enum Commands {
     let sets = Catalog.setsToRemove(keeping: keep)
     let modelsKnown = Models.available()
     let modelsBefore = modelsKnown ? Models.total(sets) : 0
+    // The service's sizes miss files it no longer tracks, so a set counts as
+    // still there while its folder exists.
+    let remaining = modelsKnown ? sets.filter(Models.present) : []
+    let modelsSize = modelsBefore > 0 ? Term.size(modelsBefore) : "an unknown amount"
     let profile = Profile.installed()
     let unknownModels = "Apple's asset service did not answer, so the models on disk were not deleted."
 
-    if profile.on && profile.kept == keep && modelsBefore == 0 {
+    if profile.on && profile.kept == keep && profile.current && remaining.isEmpty {
       print(Term.green("Apple Intelligence is already off") + (modelsKnown ? " and its models are gone." : "."))
       print(modelsKnown
         ? Term.dim("macOS removes deleted model files itself, so System Settings can count them for a while.")
@@ -88,17 +92,19 @@ enum Commands {
     }
 
     let on = featuresOn()
-    print(profile.on ? "Apple Intelligence is off, but some models are back." : "Apple Intelligence is on.")
+    print(!profile.on ? "Apple Intelligence is on."
+      : !profile.current ? "The installed profile is from an older RemoveMacAI and misses some switches."
+      : "Apple Intelligence is off, but some models are back.")
     print("  " + Term.pad("Features on", 20) + "\(on) of \(Catalog.features.count)")
-    print("  " + Term.pad("Models on disk", 20) + (modelsKnown ? Term.size(modelsBefore) : "unknown"))
+    print("  " + Term.pad("Models on disk", 20) + (modelsKnown ? modelsSize : "unknown"))
     print()
     print("Turning it off will:")
-    print("  · switch off Siri, Writing Tools, Genmoji, Image Playground, summaries and ChatGPT"
+    print("  · switch off Siri, dictation, Writing Tools, Genmoji, Image Playground, summaries and ChatGPT"
       + (keep.isEmpty ? "" : Term.dim(" (keeping " + keep.sorted().joined(separator: ", ") + ")")))
     print(modelsKnown
-      ? "  · delete " + Term.bold(Term.size(modelsBefore)) + " of models and stop macOS downloading them again"
+      ? "  · delete " + Term.bold(modelsSize) + " of models and stop macOS downloading them again"
       : "  · stop macOS downloading the models (Apple's asset service did not answer, so the ones on disk stay)")
-    if !(profile.on && profile.kept == keep) {
+    if !(profile.on && profile.kept == keep && profile.current) {
       print("  · ask you to approve one profile in System Settings (macOS requires that click)")
     }
     print()
@@ -113,7 +119,7 @@ enum Commands {
       try? data.write(to: path)
       print(Term.bold("Dry run, nothing changed."))
       print("Profile it would install:  " + path.path)
-      print("Models it would delete:    " + (sets.isEmpty ? "none" : sets.joined(separator: ", ")))
+      print("Models it would delete:    " + (remaining.isEmpty ? "none" : remaining.joined(separator: ", ")))
       return
     }
     if !yes {
@@ -126,7 +132,7 @@ enum Commands {
     }
 
     // 1. The profile switches the features off and blocks the model downloads.
-    if profile.on && profile.kept == keep {
+    if profile.on && profile.kept == keep && profile.current {
       print(Term.green("✓") + " The profile is already installed")
     } else {
       print(Term.bold("Step 1 of 2") + "  Approve the profile")
@@ -136,7 +142,7 @@ enum Commands {
       openProfileSettings()
       print("  System Settings is open. Double-click " + Term.bold("RemoveMacAI") + ", then click "
         + Term.bold("Install") + ".")
-      guard waitFor("waiting for you in System Settings", { let p = Profile.installed(); return p.on && p.kept == keep })
+      guard waitFor("waiting for you in System Settings", { let p = Profile.installed(); return p.on && p.kept == keep && p.current })
       else {
         print("  The profile is not installed yet. Run this again once it is, and it picks up from here.")
         exit(1)
@@ -144,20 +150,23 @@ enum Commands {
       print("  " + Term.green("✓") + " Profile installed")
     }
 
-    // 2. The models go now that they cannot download again.
+    // 2. The models go now that they cannot download again. Check again: a
+    // set can download while the profile waits for approval.
+    let present = modelsKnown ? sets.filter(Models.present) : []
     if !modelsKnown {
       print("  " + Term.yellow("!") + " " + unknownModels)
-    } else if modelsBefore > 0 {
+    } else if !present.isEmpty {
       print(Term.bold("Step 2 of 2") + "  Delete the models")
       do {
-        for (name, reason) in try Models.remove(sets) {
+        for (name, reason) in try Models.remove(present) {
           print("  " + Term.yellow("!") + " \(Catalog.modelSet(name)?.title ?? name) stayed: " + Term.dim(reason))
         }
       } catch { Term.fail("\(error)") }
       _ = waitFor("deleting", { Models.total(sets) == 0 }, minutes: 0.5)
       let freed = max(0, modelsBefore - Models.total(sets))
-      print("  " + Term.green("✓") + " Deleted " + Term.size(freed))
+      print("  " + Term.green("✓") + (freed > 0 ? " Deleted " + Term.size(freed) : " Asked macOS to delete them"))
       print("    " + Term.dim("macOS removes the files itself, so System Settings can count them under Apple Intelligence for a while."))
+      print("    " + Term.dim("See what is left with: removemacai scan"))
     }
     print()
     print(Term.green("Done.") + " Apple Intelligence is off.")

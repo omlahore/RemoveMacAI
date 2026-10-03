@@ -37,6 +37,7 @@ RemoveMacAI shows the current state and asks for confirmation. It then opens Sys
 |---|---|
 | `removemacai` | Show the current state, then turn Apple Intelligence off |
 | `removemacai status` | Show each feature and the size of the models on disk |
+| `removemacai scan` | Show, for each model set, what is on disk, who uses it and what `off` would do, without changing anything |
 | `removemacai off --keep <features>` | Leave the listed features on |
 | `removemacai off --dry-run` | Show the changes without applying them |
 | `removemacai revert` | Undo all changes |
@@ -50,9 +51,9 @@ curl -fsSL https://raw.githubusercontent.com/omlahore/RemoveMacAI/main/install.s
 
 ## What it changes
 
-**Features turned off:** Siri (including "Hey Siri" and the menu bar icon), Writing Tools, Genmoji, Image Playground, the ChatGPT extension, summaries in Mail, Messages, Safari, Notes and notifications, Mail smart replies, inline text predictions, Spatial Photos, Photos Clean Up and Xcode predictive code completion.
+**Features turned off:** Siri (including "Hey Siri" and the menu bar icon), dictation, the Apple Intelligence Report, Writing Tools, Genmoji, Image Playground, the ChatGPT extension, summaries in Mail, Messages, Safari, Notes and notifications, Notes transcription, Mail smart replies, inline text predictions, Spatial Photos, Photos Clean Up, Xcode predictive code completion, Shortcuts AI generation and handwriting synthesis.
 
-**Models removed:** the Apple Intelligence foundation models and the models for image generation and Genmoji, Spatial Photos, Photos Clean Up and Xcode code completion.
+**Models removed:** the Apple Intelligence foundation models and the models for image generation and Genmoji, Spatial Photos, Photos Clean Up and Xcode code completion; Siri voices, understanding, listening, dialog and planner models; speech recognition; the Shortcuts generator, handwriting synthesis and Safari browsing assistant models; and the summaries and foundation model safety configuration. Spelling, dictionary, Spotlight and Translation data are left alone.
 
 <p align="center">
   <img src="docs/status.png" alt="Output of removemacai status" width="620">
@@ -70,7 +71,7 @@ RemoveMacAI makes no network requests and collects no data.
 ## FAQ
 
 **Does dictation still work?**
-Yes. Dictation is a separate setting, and its speech models are not removed.
+No, it is turned off along with its speech recognition models. Run `removemacai off --keep dictation` to leave it on.
 
 **Do macOS updates undo the changes?**
 No. The profile, including the download block, persists across updates.

@@ -1,4 +1,5 @@
 import Foundation
+import UAF
 
 /// Checks the parts that must never go wrong, runnable without Xcode:
 /// `removemacai selftest`. Touches nothing on the system.
@@ -23,6 +24,12 @@ func selfTest() -> Bool {
   check(Catalog.features.allSatisfy { $0.modelSets.allSatisfy { Catalog.modelSet($0) != nil } },
     "every model set a feature names is in the catalog")
   check(Set(Catalog.features.map(\.id)).count == Catalog.features.count, "feature names are unique")
+  check(Set(Catalog.modelSets.map(\.assetType)).count == Catalog.modelSets.count, "asset types are unique")
+  if Models.available() {
+    let wrong = Catalog.modelSets.filter { UAFAssetType($0.name) != $0.assetType }
+    check(wrong.isEmpty, "every model set has the asset type macOS reports"
+      + (wrong.isEmpty ? "" : ": " + wrong.map { "\($0.name) is \(UAFAssetType($0.name) ?? "unknown")" }.joined(separator: ", ")))
+  }
   check(throwsFailure { try Models.remove([]) }, "an empty removal is refused before anything is sent")
   check(throwsFailure { try Models.remove(["com.apple.something.else"]) }, "an unknown set is refused")
 

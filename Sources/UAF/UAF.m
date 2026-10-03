@@ -12,6 +12,7 @@ static NSString *const kService = @"com.apple.siri.uaf.subscription.service";
 + (id)defaultManager;
 + (NSXPCInterface *)defaultInterface;
 + (id)latestStatusForClients:(NSString *)name error:(NSError **)error;
++ (id)generateInformationWithError:(NSError **)error;
 - (id)getAssetSet:(NSString *)name;
 - (NSString *)autoAssetType;
 - (int64_t)downloadedFilesystemBytes;
@@ -47,6 +48,23 @@ int64_t UAFDownloadedBytes(NSString *assetSet, NSError **error) {
   id status = [manager latestStatusForClients:assetSet error:error];
   if (![status respondsToSelector:@selector(downloadedFilesystemBytes)]) return -1;
   return [status downloadedFilesystemBytes];
+}
+
+NSDictionary *UAFInformation(NSError **error) {
+  Class manager = NSClassFromString(@"UAFAssetSetManager");
+  if (![manager respondsToSelector:@selector(generateInformationWithError:)]) {
+    if (error) *error = UAFError(@"asset inventory interface unavailable");
+    return nil;
+  }
+  id info = [manager generateInformationWithError:error];
+  if ([info isKindOfClass:NSString.class]) {
+    info = [NSJSONSerialization JSONObjectWithData:[info dataUsingEncoding:NSUTF8StringEncoding]
+                                           options:0
+                                             error:error];
+  }
+  if ([info isKindOfClass:NSDictionary.class]) return info;
+  if (error && !*error) *error = UAFError(@"asset inventory has an unexpected shape");
+  return nil;
 }
 
 void UAFResetAssetSets(NSArray<NSString *> *assetSets, void (^completion)(NSError *)) {

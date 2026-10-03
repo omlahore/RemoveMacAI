@@ -6,6 +6,7 @@ let usage = """
 
     removemacai                 show what is on, then turn it off (asks first)
     removemacai status          show what is on and how much space the models take
+    removemacai scan [--keep a,b]  show what is really on disk and what off would do (changes nothing)
     removemacai off [options]   turn it off without the overview
         --keep a,b              leave these features on (names: removemacai features)
         --dry-run               show what would change, change nothing
@@ -35,6 +36,11 @@ guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 else {
 switch args.first {
 case "status":
   Commands.status()
+case "scan":
+  args.removeFirst()
+  let keep = Set((option("--keep") ?? "").split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty })
+  if let extra = args.first { Term.fail("unknown option \(extra)") }
+  Commands.scan(keep: keep)
 case "off", nil:
   if !args.isEmpty { args.removeFirst() }
   let keep = Set((option("--keep") ?? "").split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty })

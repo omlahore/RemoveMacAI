@@ -35,7 +35,9 @@ enum Profile {
     }
     // A marker of our own, so status can tell the profile is in force and
     // what it was made with.
-    forced[identifier] = ["installed": true, "kept": kept.sorted().joined(separator: ",")]
+    forced[identifier] = [
+      "installed": true, "kept": kept.sorted().joined(separator: ","), "revision": revision,
+    ]
     let preferences = forced.keys.sorted().map { domain -> [String: Any] in
       var p = payload(
         type: "com.apple.ManagedClient.preferences", suffix: "preferences." + domain,
@@ -78,12 +80,25 @@ enum Profile {
       bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15])).uuidString
   }
 
-  /// Whether our profile is in force, and the features it was told to keep.
-  static func installed() -> (on: Bool, kept: Set<String>) {
+  /// A fingerprint of everything the profile switches, so a profile made by
+  /// an older catalog counts as out of date and is replaced.
+  static let revision: String = {
+    let parts = Catalog.features.map { f in
+      ([f.id] + f.restrictions + f.preferences.map { "\($0.domain)/\($0.key)=\($0.off)" } + f.modelSets)
+        .joined(separator: "|")
+    } + Catalog.modelSets.map { "\($0.name)=\($0.assetType)" }
+    return Insecure.SHA1.hash(data: Data(parts.joined(separator: "\n").utf8))
+      .prefix(6).map { String(format: "%02x", $0) }.joined()
+  }()
+
+  /// Whether our profile is in force, the features it was told to keep, and
+  /// whether it was made from this catalog.
+  static func installed() -> (on: Bool, kept: Set<String>, current: Bool) {
     let domain = identifier as CFString
     CFPreferencesAppSynchronize(domain)
-    guard CFPreferencesAppValueIsForced("installed" as CFString, domain) else { return (false, []) }
+    guard CFPreferencesAppValueIsForced("installed" as CFString, domain) else { return (false, [], false) }
     let kept = CFPreferencesCopyAppValue("kept" as CFString, domain) as? String ?? ""
-    return (true, Set(kept.split(separator: ",").map(String.init)))
+    let made = CFPreferencesCopyAppValue("revision" as CFString, domain) as? String
+    return (true, Set(kept.split(separator: ",").map(String.init)), made == revision)
   }
 }
