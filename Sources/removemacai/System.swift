@@ -55,12 +55,14 @@ enum Models {
   /// entries a folder has and whether a named entry exists, so only those are
   /// used. Once the models are removed, a folder keeps at most purpose_auto with
   /// the catalog <folder>.xml and its .purged copy. Anything else, or a count
-  /// macOS will not give, counts as files.
+  /// macOS will not give, counts as files. Only a folder that is surely
+  /// missing counts as empty.
   static func folderHoldsFiles(_ assetType: String, root: String = "/System/Library/AssetsV2") -> Bool {
     let name = assetType.replacingOccurrences(of: ".", with: "_")
     let folder = root + "/" + name
+    var info = stat()
+    if lstat(folder, &info) != 0 { return errno != ENOENT }
     let files = FileManager.default
-    guard files.fileExists(atPath: folder) else { return false }
     guard let top = entryCount(folder) else { return true }
     let purpose = folder + "/purpose_auto"
     guard files.fileExists(atPath: purpose) else { return top > 0 }
