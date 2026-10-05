@@ -43,14 +43,40 @@ enum Models {
   }
 
   /// Whether anything of the set may still be on disk: tracked bytes, or files
-  /// in its asset folder. A folder macOS will not let us read counts as present.
+  /// in its asset folder.
   static func present(_ set: String) -> Bool {
     if (bytes(set) ?? 0) > 0 { return true }
     guard let model = Catalog.modelSet(set) else { return false }
-    let path = "/System/Library/AssetsV2/" + model.assetType.replacingOccurrences(of: ".", with: "_")
-    guard FileManager.default.fileExists(atPath: path) else { return false }
-    guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return true }
-    return !items.isEmpty
+    return folderHoldsFiles(model.assetType)
+  }
+
+  /// Whether a set's asset folder may still hold model files. macOS will not
+  /// list some of these folders, even to an admin, but it still says how many
+  /// entries a folder has and whether a named entry exists, so only those are
+  /// used. Once the models are removed, a folder keeps at most purpose_auto with
+  /// the catalog <folder>.xml and its .purged copy. Anything else, or a count
+  /// macOS will not give, counts as files.
+  static func folderHoldsFiles(_ assetType: String, root: String = "/System/Library/AssetsV2") -> Bool {
+    let name = assetType.replacingOccurrences(of: ".", with: "_")
+    let folder = root + "/" + name
+    let files = FileManager.default
+    guard files.fileExists(atPath: folder) else { return false }
+    guard let top = entryCount(folder) else { return true }
+    let purpose = folder + "/purpose_auto"
+    guard files.fileExists(atPath: purpose) else { return top > 0 }
+    guard let inner = entryCount(purpose) else { return true }
+    let catalog = [name + ".xml", name + ".xml.purged"].filter { files.fileExists(atPath: purpose + "/" + $0) }
+    return top > 1 || inner > catalog.count
+  }
+
+  /// Entries in a folder, from its attributes rather than a listing, or nil.
+  static func entryCount(_ path: String) -> Int? {
+    var request = attrlist()
+    request.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)
+    request.dirattr = attrgroup_t(ATTR_DIR_ENTRYCOUNT)
+    var reply: (length: UInt32, count: UInt32) = (0, 0)
+    let status = withUnsafeMutableBytes(of: &reply) { getattrlist(path, &request, $0.baseAddress, $0.count, 0) }
+    return status == 0 ? Int(reply.count) : nil
   }
 
   static func total(_ sets: [String]) -> Int64 { sets.compactMap(bytes).reduce(0, +) }
