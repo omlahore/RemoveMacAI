@@ -24,6 +24,8 @@ macOS 27 no longer has a single switch for Apple Intelligence, and its models st
 curl -fsSL https://raw.githubusercontent.com/omlahore/RemoveMacAI/main/install.sh | bash
 ```
 
+Open the Terminal app (Command-Space, type Terminal, press Return). Paste the line above into the Terminal window and press Return to run it.
+
 The script downloads the latest release, verifies its SHA-256 checksum and runs it from a temporary directory. Nothing is installed.
 
 Every release is built from its tag by GitHub Actions and carries a build provenance attestation. To check that a download came from this repository's source:
