@@ -28,29 +28,39 @@ curl -fsSL https://raw.githubusercontent.com/omlahore/RemoveMacAI/main/install.s
 
 The script downloads the latest release, verifies its SHA-256 checksum and runs it from a temporary directory. Nothing is installed.
 
-To skip the script, download `removemacai-darwin-arm64.tar.gz` and its `.sha256` file from the [latest release](https://github.com/omlahore/RemoveMacAI/releases/latest), then run this in the folder you saved them to:
-
-```sh
-shasum -a 256 -c removemacai-darwin-arm64.tar.gz.sha256
-tar xzf removemacai-darwin-arm64.tar.gz
-xattr -d com.apple.quarantine removemacai
-./removemacai
-```
-
-The binary is ad-hoc signed but not notarized, so macOS won't run a copy downloaded through a browser until the quarantine flag is removed.
-
-Every release is built from its tag by GitHub Actions and carries a build provenance attestation. To check that a download came from this repository's source:
-
-```sh
-gh attestation verify removemacai-darwin-arm64.tar.gz -R omlahore/RemoveMacAI
-```
-
 With Homebrew:
 
 ```sh
 brew install omlahore/tap/removemacai
 removemacai
 ```
+
+With [packslip](https://packslip.dev/docs/bootstrap/) (1.5.1 or newer):
+
+```sh
+packslip install github.com/omlahore/RemoveMacAI &&
+  ~/.local/bin/removemacai
+```
+
+Or with [mise](https://mise.jdx.dev/dev-tools/backends/packslip.html):
+
+```sh
+mise use -g packslip:github.com/omlahore/RemoveMacAI &&
+  mise exec -- removemacai
+```
+
+Both require a release with `packslip.sigstore.json`; v0.2.5 and earlier have none.
+
+To skip the script, download `removemacai-darwin-arm64.tar.gz` and its `.sha256` file from the [latest release](https://github.com/omlahore/RemoveMacAI/releases/latest), then run this in the folder you saved them to:
+
+```sh
+shasum -a 256 -c removemacai-darwin-arm64.tar.gz.sha256 &&
+tar xzf removemacai-darwin-arm64.tar.gz &&
+xattr -dr com.apple.quarantine removemacai &&
+./removemacai
+```
+
+The binary is ad-hoc signed but not notarized, so macOS won't run a copy downloaded through a browser until the quarantine flag is removed.
 
 RemoveMacAI shows the current state and asks for confirmation. It then opens System Settings to install its configuration profile, which macOS requires the user to approve, and removes the models.
 
@@ -61,6 +71,23 @@ curl -fsSL https://raw.githubusercontent.com/omlahore/RemoveMacAI/main/install.s
 ```
 
 `removemacai features` lists the names.
+
+### Verify a download
+
+Check build provenance with the [GitHub CLI](https://cli.github.com/):
+
+```sh
+gh attestation verify removemacai-darwin-arm64.tar.gz -R omlahore/RemoveMacAI
+```
+
+To verify a signed manifest, download `packslip.sigstore.json` and the archive from the same release:
+
+```sh
+packslip verify packslip.sigstore.json \
+  --identity-prefix https://github.com/omlahore/RemoveMacAI/ \
+  --issuer https://token.actions.githubusercontent.com \
+  --artifact removemacai-darwin-arm64.tar.gz
+```
 
 ## Usage
 
