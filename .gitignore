@@ -2,3 +2,4 @@
 .swiftpm/
 *.mobileconfig
 dist/
+.DS_Store
