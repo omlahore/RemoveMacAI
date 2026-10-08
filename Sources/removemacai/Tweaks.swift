@@ -71,6 +71,8 @@ enum Change: Equatable {
   case pref(String, String, PlistValue, currentHost: Bool = false)
   /// A launchd agent in the user's session, disabled and unloaded.
   case service(String)
+  /// Music's application job, whose label changes when macOS replaces its files.
+  case musicLaunches
   /// Dock icons removed by bundle identifier.
   case dockRemove([String])
   /// ~/Library shown in Finder.
@@ -90,6 +92,7 @@ enum Change: Equatable {
     case .forced(let d, let k, _): return "forced:\(d):\(k)"
     case .pref(let d, let k, _, let host): return "pref:\(d):\(k)" + (host ? ":currentHost" : "")
     case .service(let l): return "service:\(l)"
+    case .musicLaunches: return "application:com.apple.Music"
     case .dockRemove(let ids): return "dock:" + ids.joined(separator: ",")
     case .showLibrary: return "library"
     }
@@ -112,6 +115,9 @@ enum Change: Equatable {
       if case .string(let s) = v { value = "\"\(s)\"" } else { value = v.description }
       return "defaults\(host ? " -currentHost" : "") write \(d) \"\(k)\" \(type) \(value)"
     case .service(let l): return "launchctl disable gui/$UID/\(l) && launchctl bootout gui/$UID/\(l)"
+    case .musicLaunches:
+      guard let label = try? MusicLaunch.label() else { return "could not identify Music's application launch entry" }
+      return Change.service(label).command
     case .dockRemove(let ids): return "remove from the Dock: " + ids.joined(separator: ", ")
     case .showLibrary: return "chflags nohidden ~/Library"
     }
@@ -201,6 +207,11 @@ enum Tweaks {
       detail: "Stops the play key opening Music when nothing else is playing.",
       caveat: "The play key no longer starts Music itself.",
       changes: [.service("com.apple.rcd")], presets: [.recommended]),
+    Tweak(
+      id: "music-launches", group: .annoyances, title: "Block Music launches, including from AirPods",
+      detail: "Disables Music's application launch entry, so an AirPod press no longer opens it. No background helper or configuration profile is installed.",
+      caveat: "Closes Music and blocks manual launches too. Reapply after a macOS update replaces Music's files.",
+      changes: [.musicLaunches]),
     Tweak(
       id: "iphone-mirroring", group: .annoyances, title: "Turn off iPhone Mirroring",
       detail: "Turns iPhone Mirroring off, so the app and its prompts go away.",

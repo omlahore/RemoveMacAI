@@ -17,6 +17,7 @@ struct Snapshot {
   func state(_ tweak: Tweak) -> TweakState {
     guard tweak.supported else { return .unsupported }
     if tweak.changes.contains(where: { managedElsewhere($0, tweak) }) { return .managed }
+    if tweak.changes == [.musicLaunches] { return MusicLaunch.state(disabled: disabledServices) }
     let done = tweak.changes.filter(applied).count
     return done == tweak.changes.count ? .applied : done == 0 ? .notApplied : .partial
   }
@@ -32,6 +33,8 @@ struct Snapshot {
       return value.matches(Prefs.read(domain, key, currentHost: host))
     case .service(let label):
       return disabledServices.contains(label)
+    case .musicLaunches:
+      return MusicLaunch.state(disabled: disabledServices) == .applied
     case .dockRemove(let ids):
       return dockApps.isDisjoint(with: ids)
     case .showLibrary:
@@ -168,10 +171,12 @@ enum Engine {
   // MARK: reading the system
 
   static let uid = getuid()
+  /// The self-test substitutes launchd; it never changes the real services.
+  static var launchctl: ([String]) -> Shell.Result = { Shell.run("/bin/launchctl", $0) }
 
   /// Services the user's session has switched off.
   static func disabledServices() -> Set<String> {
-    let out = Shell.run("/bin/launchctl", ["print-disabled", "gui/\(uid)"]).output
+    let out = launchctl(["print-disabled", "gui/\(uid)"]).output
     var labels = Set<String>()
     for line in out.split(separator: "\n") {
       let parts = line.components(separatedBy: "=>")
@@ -208,6 +213,40 @@ enum Engine {
 
   // MARK: changing it
 
+  static func disableService(_ label: String, tweak: String, journal: inout Journal) -> [String] {
+    let key = Change.service(label).key
+    if journal.entries[key] == nil {
+      journal.entries[key] = .init(
+        tweak: tweak, date: Date(), previous: .service(disabled: disabledServices().contains(label)))
+    }
+    let target = "gui/\(uid)/\(label)"
+    let disabled = launchctl(["disable", target])
+    guard disabled.ok else { return ["could not disable \(label): \(disabled.output.trimmed)"] }
+    if launchctl(["print", target]).ok {
+      let stopped = launchctl(["bootout", target])
+      if !stopped.ok { return ["disabled \(label), but could not stop it: \(stopped.output.trimmed)"] }
+    }
+    return []
+  }
+
+  static func restoreService(_ label: String, journal: inout Journal) -> [String] {
+    let key = Change.service(label).key
+    if case .service(let wasDisabled)? = journal.entries[key]?.previous, wasDisabled {
+      journal.entries[key] = nil
+      return []
+    }
+    let target = "gui/\(uid)/\(label)"
+    let enabled = launchctl(["enable", target])
+    guard enabled.ok else { return ["could not enable \(label): \(enabled.output.trimmed)"] }
+    let plist = "/System/Library/LaunchAgents/\(label).plist"
+    if FileManager.default.fileExists(atPath: plist), !launchctl(["print", target]).ok {
+      let started = launchctl(["bootstrap", "gui/\(uid)", plist])
+      guard started.ok else { return ["could not start \(label): \(started.output.trimmed)"] }
+    }
+    journal.entries[key] = nil
+    return []
+  }
+
   /// Applies the settings a tweak changes outside the profile. Returns problems.
   static func apply(_ tweak: Tweak, journal: inout Journal) -> [String] {
     var problems: [String] = []
@@ -226,13 +265,10 @@ enum Engine {
           problems.append("\(domain) \(k) did not change")
         }
       case .service(let label):
-        if journal.entries[key] == nil {
-          journal.entries[key] = .init(
-            tweak: tweak.id, date: Date(), previous: .service(disabled: disabledServices().contains(label)))
-        }
-        let disabled = Shell.run("/bin/launchctl", ["disable", "gui/\(uid)/\(label)"])
-        if !disabled.ok { problems.append("could not disable \(label): \(disabled.output.trimmed)") }
-        Shell.run("/bin/launchctl", ["bootout", "gui/\(uid)/\(label)"])
+        problems += disableService(label, tweak: tweak.id, journal: &journal)
+      case .musicLaunches:
+        do { problems += disableService(try MusicLaunch.label(), tweak: tweak.id, journal: &journal) }
+        catch { problems.append("could not identify Music's application launch entry: \(error)") }
       case .dockRemove(let ids):
         let tiles = dockTiles()
         var kept: [[String: Any]] = []
@@ -277,15 +313,12 @@ enum Engine {
         if case .pref(let value)? = entry?.previous { previous = value }
         Prefs.write(domain, k, previous, currentHost: host)
       case .service(let label):
-        if case .service(let wasDisabled)? = entry?.previous, wasDisabled { break }
-        let enabled = Shell.run("/bin/launchctl", ["enable", "gui/\(uid)/\(label)"])
-        if !enabled.ok { problems.append("could not enable \(label): \(enabled.output.trimmed)") }
-        let plist = "/System/Library/LaunchAgents/\(label).plist"
-        if FileManager.default.fileExists(atPath: plist),
-          !Shell.run("/bin/launchctl", ["print", "gui/\(uid)/\(label)"]).ok
-        {
-          Shell.run("/bin/launchctl", ["bootstrap", "gui/\(uid)", plist])
-        }
+        problems += restoreService(label, journal: &journal)
+        continue // A failed restore keeps its journal entry for retry.
+      case .musicLaunches:
+        var labels = MusicLaunch.recordedLabels(tweak.id, journal: journal)
+        if labels.isEmpty, let current = try? MusicLaunch.label() { labels = [current] }
+        for label in labels { problems += restoreService(label, journal: &journal) }
       case .dockRemove:
         guard case .dock(let removed)? = entry?.previous else { break }
         var tiles = dockTiles()

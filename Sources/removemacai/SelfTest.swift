@@ -268,6 +268,89 @@ func selfTest() -> Bool {
   Engine.folder = realFolder
   Engine.journalBlocked = nil
 
+  do {
+    let realApp = MusicLaunch.app
+    let realLaunchctl = Engine.launchctl
+    Engine.folder = scratch
+    MusicLaunch.app = scratch.appendingPathComponent("Music.app")
+    defer {
+      Engine.folder = realFolder
+      MusicLaunch.app = realApp
+      Engine.launchctl = realLaunchctl
+      try? FileManager.default.removeItem(at: scratch)
+    }
+    var disabled: Set<String> = ["com.example.unrelated"]
+    var running = Set<String>()
+    var failEnable = Set<String>()
+    var failStop = false
+    Engine.launchctl = { args in
+      let label = args.last?.split(separator: "/").last.map(String.init) ?? ""
+      switch args.first {
+      case "print-disabled":
+        return .init(status: 0, output: disabled.sorted().map { "\"\($0)\" => disabled" }.joined(separator: "\n"))
+      case "print": return .init(status: running.contains(label) ? 0 : 113, output: "")
+      case "disable": disabled.insert(label)
+      case "enable":
+        if failEnable.contains(label) { return .init(status: 5, output: "enable failed") }
+        disabled.remove(label)
+      case "bootout":
+        if failStop { return .init(status: 5, output: "stop failed") }
+        running.remove(label)
+      default: return .init(status: 1, output: "unexpected launchctl operation")
+      }
+      return .init(status: 0, output: "")
+    }
+    let tweak = Tweaks.tweak("music-launches")!
+    var journal = Engine.Journal()
+    check(tweak.presets.isEmpty && !tweak.inProfile,
+      "blocking manual Music launches is opt-in and needs no profile")
+    check(!Engine.apply(tweak, journal: &journal).isEmpty && journal.entries.isEmpty
+      && disabled == ["com.example.unrelated"],
+      "missing Music files fail without disabling an unrelated job")
+    do {
+      let executable = MusicLaunch.app.appendingPathComponent("Contents/MacOS/Music")
+      try FileManager.default.createDirectory(at: executable.deletingLastPathComponent(), withIntermediateDirectories: true)
+      try Data("first".utf8).write(to: executable)
+      let first = try MusicLaunch.label()
+      running.insert(first)
+      check(Engine.apply(tweak, journal: &journal).isEmpty && disabled.contains(first) && running.isEmpty
+        && Snapshot().state(tweak) == .applied,
+        "applying the Music tweak disables its launch entry and closes the running app")
+      try FileManager.default.moveItem(at: executable, to: scratch.appendingPathComponent("old-Music"))
+      try Data("replacement".utf8).write(to: executable)
+      let second = try MusicLaunch.label()
+      check(first != second && Snapshot().state(tweak) == .partial,
+        "replacing Music changes its launch entry and leaves the tweak visibly partial")
+      check(Engine.apply(tweak, journal: &journal).isEmpty && disabled.contains(second)
+        && Set(MusicLaunch.recordedLabels(tweak.id, journal: journal)) == [first, second],
+        "reapply blocks the replacement and retains the old entry for undo")
+      Engine.save(journal)
+      failEnable.insert(first)
+      check(!Engine.revertAll().isEmpty && disabled.contains(first) && !disabled.contains(second)
+        && MusicLaunch.recordedLabels(tweak.id, journal: Engine.loadJournal()) == [first],
+        "failed undo keeps only the failed entry for retry while restoring the others")
+      failEnable.removeAll()
+      check(Engine.revertAll().isEmpty && disabled == ["com.example.unrelated"]
+        && Engine.loadJournal().entries.isEmpty && Snapshot().state(tweak) == .notApplied,
+        "retry restores all Music launch entries and leaves unrelated jobs alone")
+      journal = Engine.Journal()
+      disabled.insert(second)
+      check(Engine.apply(tweak, journal: &journal).isEmpty && Engine.apply(tweak, journal: &journal).isEmpty
+        && Engine.revert(tweak, journal: &journal).isEmpty && disabled.contains(second) && journal.entries.isEmpty,
+        "undo preserves a Music entry that was disabled before applying, even after reapply")
+      disabled.remove(second)
+      running.insert(second)
+      failStop = true
+      check(!Engine.apply(tweak, journal: &journal).isEmpty && disabled.contains(second) && running.contains(second)
+        && Snapshot().state(tweak) == .partial,
+        "failure to stop a running Music app is reported and remains repairable")
+      failStop = false
+      check(Engine.apply(tweak, journal: &journal).isEmpty && running.isEmpty
+        && Engine.revert(tweak, journal: &journal).isEmpty && disabled == ["com.example.unrelated"],
+        "a failed stop can be retried without overwriting the original enabled state")
+    } catch { check(false, "Music launch lifecycle: \(error)") }
+  }
+
   // Partly applied tweaks are the person's own settings until they ask.
   var s = Snapshot()
   s.profile = Profile.Installed(on: true, ai: false, kept: [], tweaks: ["analytics"])
