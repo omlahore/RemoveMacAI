@@ -54,16 +54,16 @@ func presetOption() -> Preset? {
 
 // Opened from Finder: the app. With arguments, or from a bare binary: the CLI.
 if args.isEmpty && Bundle.main.bundleURL.pathExtension == "app" || args.first == "app" {
-  guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 else {
-    Term.fail("RemoveMacAI needs macOS 26 or newer")
+  guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 15 else {
+    Term.fail("RemoveMacAI needs macOS 15 or newer")
   }
   Shell.inApp = true
   RemoveMacAIApp.main()
   exit(0)
 }
 
-guard args.first == "selftest" || ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 else {
-  Term.fail("RemoveMacAI needs macOS 26 or newer")
+guard args.first == "selftest" || ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 15 else {
+  Term.fail("RemoveMacAI needs macOS 15 or newer")
 }
 
 switch args.first {

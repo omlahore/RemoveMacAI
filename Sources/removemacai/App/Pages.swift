@@ -195,7 +195,7 @@ struct IntelligenceView: View {
       }
 
       Section {
-        ForEach(Catalog.features, id: \.id) { feature in
+        ForEach(Catalog.availableFeatures, id: \.id) { feature in
           Toggle(isOn: Binding(
             get: { model.aiKept.contains(feature.id) },
             set: { if $0 { model.aiKept.insert(feature.id) } else { model.aiKept.remove(feature.id) } }
@@ -228,7 +228,7 @@ struct IntelligenceView: View {
         } else if !model.modelsAvailable {
           Text("Apple's asset service didn't answer, so the sizes are unknown.").foregroundStyle(.secondary)
         } else {
-          ForEach(Catalog.modelSets, id: \.name) { set in
+          ForEach(Catalog.availableModelSets, id: \.name) { set in
             LabeledContent(set.title) {
               let bytes = model.modelBytes[set.name] ?? 0
               Text(bytes > 0 ? Term.size(bytes) : "None").foregroundStyle(bytes > 0 ? .primary : .secondary)

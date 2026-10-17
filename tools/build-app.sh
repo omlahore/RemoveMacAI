@@ -40,7 +40,7 @@ cat > "$app/Contents/Info.plist" <<PLIST
   <key>CFBundleShortVersionString</key><string>$version</string>
   <key>CFBundleVersion</key><string>$version</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
-  <key>LSMinimumSystemVersion</key><string>26.0</string>
+  <key>LSMinimumSystemVersion</key><string>15.0</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>NSHumanReadableCopyright</key><string>MIT License. Apple Intelligence removal builds on pared by 4evy.</string>
 </dict>

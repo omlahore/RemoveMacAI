@@ -21,7 +21,7 @@ enum Commands {
   static func status() {
     header()
     print(Term.bold("Features"))
-    for feature in Catalog.features {
+    for feature in Catalog.availableFeatures {
       let label: String
       switch Settings.state(feature) {
       case .lockedOff: label = Term.green("off") + Term.dim(" (locked)")
@@ -51,12 +51,12 @@ enum Commands {
       return nil
     }
     var readings: [String: Int64] = [:]
-    for set in Catalog.modelSets {
+    for set in Catalog.availableModelSets {
       let bytes = Models.bytes(set.name)
       readings[set.name] = bytes
       print("  " + Term.pad(set.title, 40) + modelSize(bytes))
     }
-    let total = Models.total(Catalog.modelSets.map(\.name), read: { readings[$0] })
+    let total = Models.total(Catalog.availableModelSets.map(\.name), read: { readings[$0] })
     print("  " + Term.pad("Total", 40) + (total.map { Term.bold(Term.size($0)) } ?? Term.yellow("unknown")))
     return total
   }
@@ -66,19 +66,19 @@ enum Commands {
     return bytes > 0 ? Term.yellow(Term.size(bytes)) : Term.dim("none")
   }
 
-  static func featuresOn() -> Int { Catalog.features.filter { Settings.state($0) == .on }.count }
+  static func featuresOn() -> Int { Catalog.availableFeatures.filter { Settings.state($0) == .on }.count }
 
   static func isOff() -> Bool {
     let profile = Profile.installed()
-    return profile.on && profile.ai && Catalog.features.allSatisfy { Settings.state($0).isOff }
+    return profile.on && profile.ai && Catalog.availableFeatures.allSatisfy { Settings.state($0).isOff }
   }
 
   // MARK: off
 
   static func off(keep: Set<String>, dryRun: Bool, yes: Bool) -> Bool {
     header()
-    for id in keep where Catalog.feature(id) == nil {
-      Term.fail("there is no feature called \"\(id)\". The names are listed by: removemacai features")
+    for id in keep where !Catalog.availableFeatures.contains(where: { $0.id == id }) {
+      Term.fail("there is no feature called \"\(id)\" on this version of macOS. The names are listed by: removemacai features")
     }
     let sets = Catalog.setsToRemove(keeping: keep)
     let modelsAvailable = sets.isEmpty || Models.available()
@@ -100,7 +100,7 @@ enum Commands {
 
     let on = featuresOn()
     print(profileReady ? "The profile is installed. Checking the selected models." : "Checking Apple Intelligence and its models.")
-    print("  " + Term.pad("Features on", 20) + "\(on) of \(Catalog.features.count)")
+    print("  " + Term.pad("Features on", 20) + "\(on) of \(Catalog.availableFeatures.count)")
     print("  " + Term.pad("Models on disk", 20) + (modelsBefore.map(Term.size) ?? "unknown"))
     print()
     print("Turning it off will:")
@@ -228,7 +228,7 @@ enum Commands {
   }
 
   static func warnKeptButOff(_ keep: Set<String>) {
-    for feature in Catalog.features where keep.contains(feature.id) && Settings.state(feature) == .off {
+    for feature in Catalog.availableFeatures where keep.contains(feature.id) && Settings.state(feature) == .off {
       print(Term.yellow("!") + " \(feature.title) is kept, but it is switched off. Turn it on in System Settings.")
     }
   }
@@ -324,7 +324,7 @@ enum Commands {
   // MARK: features
 
   static func features() {
-    for f in Catalog.features { print(Term.pad(f.id, 26) + f.title) }
+    for f in Catalog.availableFeatures { print(Term.pad(f.id, 26) + f.title) }
   }
 
   // MARK: helpers

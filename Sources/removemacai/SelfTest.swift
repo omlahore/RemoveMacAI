@@ -13,16 +13,24 @@ func selfTest() -> Bool {
     return false
   }
 
-  check(Set(Catalog.setsToRemove(keeping: [])) == Set(Catalog.modelSets.map(\.name)),
-    "off removes every model set")
+  check(Set(Catalog.setsToRemove(keeping: [])) == Set(Catalog.availableModelSets.map(\.name)),
+    "off removes every model set this macOS has")
   let keptWriting = Catalog.setsToRemove(keeping: ["writing-tools"])
-  check(!keptWriting.contains(Catalog.foundationModels) && keptWriting.contains(Catalog.spatialModels),
+  check(!keptWriting.contains(Catalog.foundationModels) && keptWriting.contains(Catalog.visualModels),
     "a kept feature keeps the models it needs, and only those")
-  check(Catalog.setsToRemove(keeping: Set(Catalog.features.map(\.id))).isEmpty,
+  check(Catalog.setsToRemove(keeping: Set(Catalog.availableFeatures.map(\.id))).isEmpty,
     "keeping everything removes nothing")
   check(Catalog.features.allSatisfy { $0.modelSets.allSatisfy { Catalog.modelSet($0) != nil } },
     "every model set a feature names is in the catalog")
   check(Set(Catalog.features.map(\.id)).count == Catalog.features.count, "feature names are unique")
+  check(Catalog.availableFeatures.allSatisfy(\.supported)
+    && Catalog.availableFeatures.count + Catalog.features.filter { !$0.supported }.count == Catalog.features.count,
+    "only Apple Intelligence features this macOS has are offered")
+  check(Catalog.availableModelSets.allSatisfy { set in
+    Catalog.availableFeatures.contains { $0.modelSets.contains(set.name) }
+  }, "only model sets a supported feature needs are offered")
+  check(Catalog.setsToRemove(keeping: []).allSatisfy { Catalog.availableModelSets.map(\.name).contains($0) },
+    "off never targets a model set this macOS does not have")
   check(throwsFailure { try Models.remove([]) }, "an empty removal is refused before anything is sent")
   check(throwsFailure { try Models.remove(["com.apple.something.else"]) }, "an unknown set is refused")
   let lockError = NSError(
@@ -162,7 +170,7 @@ func selfTest() -> Bool {
     let blocks = payloads.first { ($0["PayloadIdentifier"] as? String)?.hasSuffix(".com.apple.MobileAsset") == true }!
     let content = (blocks["PayloadContent"] as! [String: Any])["com.apple.MobileAsset"] as! [String: Any]
     let settings = ((content["Forced"] as! [[String: Any]])[0]["mcx_preference_settings"]) as! [String: String]
-    check(settings.count == Catalog.modelSets.count && settings.values.allSatisfy { $0.hasPrefix("https://127.0.0.1:9/") },
+    check(settings.count == Catalog.availableModelSets.count && settings.values.allSatisfy { $0.hasPrefix("https://127.0.0.1:9/") },
       "the profile blocks downloads for every removed set")
     let uuids = payloads.compactMap { $0["PayloadUUID"] as? String } + [plist["PayloadUUID"] as! String]
     check(Set(uuids).count == uuids.count && Profile.uuid("a") == Profile.uuid("a"),

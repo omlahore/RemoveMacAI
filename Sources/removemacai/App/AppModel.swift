@@ -119,9 +119,9 @@ final class AppModel {
       let available = Models.available()
       var bytes: [String: Int64] = [:]
       if available {
-        for set in Catalog.modelSets { if let b = Models.bytes(set.name) { bytes[set.name] = b } }
+        for set in Catalog.availableModelSets { if let b = Models.bytes(set.name) { bytes[set.name] = b } }
       }
-      let states = Dictionary(uniqueKeysWithValues: Catalog.features.map { ($0.id, Settings.state($0)) })
+      let states = Dictionary(uniqueKeysWithValues: Catalog.availableFeatures.map { ($0.id, Settings.state($0)) })
       let sizes = bytes
       await MainActor.run {
         self.modelsAvailable = available

@@ -37,7 +37,7 @@ enum Profile {
     var forced: [String: [String: Any]] = [:]
 
     if let kept = contents.ai {
-      for feature in Catalog.features where !kept.contains(feature.id) {
+      for feature in Catalog.availableFeatures where !kept.contains(feature.id) {
         for key in feature.restrictions { restrictions[key] = false }
         for pref in feature.preferences { forced[pref.domain, default: [:]][pref.key] = pref.off }
       }
