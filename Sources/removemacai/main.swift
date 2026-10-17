@@ -39,7 +39,10 @@ func flag(_ name: String) -> Bool {
   return true
 }
 func option(_ name: String) -> String? {
-  guard let i = args.firstIndex(of: name), i + 1 < args.count else { return nil }
+  guard let i = args.firstIndex(of: name) else { return nil }
+  guard i + 1 < args.count, !args[i + 1].hasPrefix("-") else {
+    Term.fail(name == "--keep" ? "--keep needs feature names" : "\(name) needs a value")
+  }
   let value = args[i + 1]
   args.removeSubrange(i...(i + 1))
   return value
@@ -81,10 +84,14 @@ case "revert":
 case "on":
   Commands.on()
 case "features":
+  args.removeFirst()
+  if let extra = args.first { Term.fail("unexpected argument \(extra)") }
   Commands.features()
 case "tweaks":
   args.removeFirst()
-  TweakCommands.list(json: flag("--json"))
+  let json = flag("--json")
+  if let extra = args.first { Term.fail("unexpected argument \(extra)") }
+  TweakCommands.list(json: json)
 case "apply", "undo":
   let command = args.removeFirst()
   let preset = presetOption()
@@ -103,6 +110,7 @@ case "clean":
   args.removeFirst()
   let dryRun = flag("--dry-run")
   let yes = flag("--yes") || flag("-y")
+  if let bad = args.first(where: { $0.hasPrefix("-") }) { Term.fail("unknown option \(bad)") }
   exit(TweakCommands.clean(ids: args, dryRun: dryRun, yes: yes) ? 0 : 1)
 case "export":
   args.removeFirst()
