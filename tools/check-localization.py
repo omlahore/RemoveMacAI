@@ -69,7 +69,7 @@ NAMES = {"Finder", "Genmoji", "Image Playground", "Wi-Fi", "Bluetooth", "RemoveM
 missing = []
 files = sorted(glob.glob("Sources/removemacai/App/*.swift")) + [f"Sources/removemacai/{f}" for f in ENGINE]
 for path in files:
-    if path.endswith(("Snapshots.swift", "L10n.swift")):
+    if path.endswith(("Snapshots.swift", "L10n.swift", "AppLanguage.swift")):
         continue
     code = open(path, encoding="utf-8").read()
     engine = path.split("/")[-1] in ENGINE

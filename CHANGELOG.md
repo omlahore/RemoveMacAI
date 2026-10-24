@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0-beta.2
+
+- Added Simplified Chinese (简体中文) localization and an in-app language selector (System / English / 简体中文 / Русский) in Settings.
+
 ## Unreleased
 
 - Block Music launches is now called Stop Music from opening, even by hand, and its warning says Music won't open at all until you undo it. The old name read as if only AirPods were blocked (#67).

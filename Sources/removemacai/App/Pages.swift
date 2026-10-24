@@ -601,3 +601,31 @@ enum FeatureBlurbs {
     "xcode-completion": "Predicts code as you type in Xcode.",
   ]
 }
+
+// MARK: - Settings
+
+struct SettingsView: View {
+  @State private var language: AppLanguage = .current
+
+  var body: some View {
+    Form {
+      Section {
+        Picker("Language", selection: $language) {
+          ForEach(AppLanguage.allCases) { language in
+            Text(language.nativeName).tag(language)
+          }
+        }
+        .pickerStyle(.inline)
+      } header: {
+        Text("Language")
+      } footer: {
+        Footer("The app restarts to apply a new language.")
+      }
+    }
+    .formStyle(.grouped)
+    .navigationTitle(L("Settings"))
+    .onChange(of: language) { _, newValue in
+      AppLanguage.apply(newValue)
+    }
+  }
+}
