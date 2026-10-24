@@ -27,6 +27,12 @@ func selfTest() -> Bool {
     && !FileManager.default.fileExists(atPath: invalidProfile.path),
     "export rejects unknown options without writing a profile")
 
+  let invalidBackground = Shell.run(executable, ["background", "of"])
+  let invalidBackgroundOutput = invalidBackground.output.replacingOccurrences(
+    of: #"\x1B\[[0-9;]*m"#, with: "", options: .regularExpression)
+  check(!invalidBackground.ok && invalidBackgroundOutput.contains("error: unknown action \"of\", use off or on"),
+    "background rejects unknown actions instead of listing items")
+
   check(Set(Catalog.setsToRemove(keeping: [])) == Set(Catalog.availableModelSets.map(\.name)),
     "off removes every model set this macOS has")
   let keptWriting = Catalog.setsToRemove(keeping: ["writing-tools"])

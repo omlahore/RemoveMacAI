@@ -136,9 +136,9 @@ enum TweakCommands {
   // MARK: background items
 
   static func background(_ args: [String], yes: Bool) -> Bool {
-    let items = BackgroundItems.scan()
-    let labels = BackgroundItems.disabledLabels()
-    guard let action = args.first, action == "off" || action == "on" else {
+    guard let action = args.first else {
+      let items = BackgroundItems.scan()
+      let labels = BackgroundItems.disabledLabels()
       Commands.header()
       if items.isEmpty {
         print("No background items from other apps.")
@@ -157,6 +157,11 @@ enum TweakCommands {
       print(Term.dim("Turn one off with: removemacai background off <label>"))
       return true
     }
+    guard action == "off" || action == "on" else {
+      Term.fail("unknown action \"\(action)\", use off or on")
+    }
+    let items = BackgroundItems.scan()
+    let labels = BackgroundItems.disabledLabels()
     let names = Set(args.dropFirst())
     let chosen = items.filter { names.contains($0.label) }
     for name in names where !chosen.contains(where: { $0.label == name }) {
