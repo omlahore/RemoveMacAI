@@ -136,9 +136,12 @@ enum TweakCommands {
   // MARK: background items
 
   static func background(_ args: [String], yes: Bool) -> Bool {
+    if let action = args.first, action != "off" && action != "on" {
+      Term.fail("unknown action \"\(action)\", use off or on")
+    }
     let items = BackgroundItems.scan()
     let labels = BackgroundItems.disabledLabels()
-    guard let action = args.first, action == "off" || action == "on" else {
+    guard let action = args.first else {
       Commands.header()
       if items.isEmpty {
         print("No background items from other apps.")
