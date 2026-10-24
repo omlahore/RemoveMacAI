@@ -3,7 +3,7 @@ import Observation
 import SwiftUI
 
 enum Page: Hashable {
-  case overview, intelligence, group(TweakGroup), background, storage, changes
+  case overview, intelligence, group(TweakGroup), background, storage, changes, settings
 
   var title: String {
     switch self {
@@ -13,6 +13,7 @@ enum Page: Hashable {
     case .background: return "Background Items"
     case .storage: return "Storage"
     case .changes: return "Undo"
+    case .settings: return "Settings"
     }
   }
 
@@ -24,6 +25,7 @@ enum Page: Hashable {
     case .background: return "gearshape.2"
     case .storage: return "internaldrive"
     case .changes: return "arrow.uturn.backward"
+    case .settings: return "gearshape"
     }
   }
 }
