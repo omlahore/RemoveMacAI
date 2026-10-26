@@ -34,6 +34,7 @@ struct DetailView: View {
     case .background: BackgroundView()
     case .storage: StorageView()
     case .changes: ChangesView()
+    case .settings: SettingsView()
     }
   }
 }
@@ -62,6 +63,9 @@ struct Sidebar: View {
       Section("Clean Up") {
         row(.storage)
         row(.changes)
+      }
+      Section("Settings") {
+        row(.settings)
       }
     }
     .listStyle(.sidebar)

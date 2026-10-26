@@ -411,3 +411,8 @@
 "RemoveMacAI needs your password to change background items for all users." = "RemoveMacAI требуется ваш пароль, чтобы изменить фоновые объекты для всех пользователей.";
 "RemoveMacAI needs your password to move items only an administrator can change." = "RemoveMacAI требуется ваш пароль, чтобы переместить объекты, которые может изменять только администратор.";
 "Turn off everything except 1 kept feature" = "Выключить всё, кроме 1 оставленной функции";
+
+"Settings" = "Настройки";
+"Language" = "Язык";
+"The app restarts to apply a new language." = "Приложение перезапустится, чтобы применить новый язык.";
+"System" = "Система";
