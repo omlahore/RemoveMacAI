@@ -140,9 +140,15 @@ final class AppModel {
   func modelBytes(_ sets: [String]) -> Int64? { Models.total(sets, read: { self.modelBytes[$0] }) }
 
   func loadBackground() {
-    background = BackgroundItems.scan()
-    let labels = BackgroundItems.disabledLabels()
-    backgroundOff = Set(background.filter { BackgroundItems.isDisabled($0, labels) }.map(\.id))
+    Task.detached(priority: .userInitiated) {
+      let items = BackgroundItems.scan()
+      let labels = BackgroundItems.disabledLabels()
+      let off = Set(items.filter { BackgroundItems.isDisabled($0, labels) }.map(\.id))
+      await MainActor.run {
+        self.background = items
+        self.backgroundOff = off
+      }
+    }
   }
 
   func state(_ tweak: Tweak) -> TweakState { states[tweak.id] ?? snapshot.state(tweak) }
