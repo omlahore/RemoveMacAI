@@ -10,48 +10,7 @@ struct OverviewView: View {
       VStack(alignment: .leading, spacing: 18) {
         StatusHero()
         if let update = model.slowedUpdate { UpdateNotice(name: update) }
-        HStack(spacing: 12) {
-          StatTile(title: "Settings changed", value: String(localized: "\(model.appliedCount) of \(model.availableCount)"), link: model.appliedCount > 0 ? "See which ones" : "Browse settings") {
-            model.page = .group(TweakGroup.allCases.first { model.switchedOn(in: $0).on > 0 } ?? .privacy)
-          }
-          StatTile(title: "Apps running in the background", value: model.background.isEmpty ? L("None") : "\(model.background.count)", link: "See what they are") {
-            model.page = .background
-          }
-          StatTile(
-            title: "Space you can get back",
-            value: model.scanned ? UISize.of(model.storage.reduce(0) { $0 + $1.bytes }) : L("Not checked"),
-            link: model.scanned ? "Old installers and caches" : "Check now"
-          ) {
-            model.page = .storage
-            if !model.scanned && !model.scanning { model.scan() }
-          }
-        }
-        VStack(alignment: .leading, spacing: 10) {
-          Text("Or start with a preset").font(.headline)
-          VStack(spacing: 0) {
-            ForEach(Array(Preset.allCases.enumerated()), id: \.element) { i, preset in
-              if i > 0 { Divider().padding(.leading, 56) }
-              HStack(alignment: .top, spacing: 14) {
-                Image(systemName: preset == .recommended ? "checkmark.seal" : "hand.raised")
-                  .font(.title2).foregroundStyle(.tint).frame(width: 28)
-                VStack(alignment: .leading, spacing: 3) {
-                  Text(L(preset.title)).font(.headline)
-                  Text(L(preset.summary)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-                  Text("\(Tweaks.preset(preset).count) settings and Apple Intelligence off")
-                    .font(.caption).foregroundStyle(.tertiary)
-                }
-                Spacer()
-                Button("Review…") {
-                  model.choose(preset)
-                  model.reviewing = true
-                }
-              }
-              .padding(14)
-            }
-          }
-          .card()
-          Footer("A preset adds to what's already applied and changes nothing until you review it.")
-        }
+        if model.showMoreTools { tools } else { moreTools }
         SafetyCard { model.openWelcome() }
           .padding(16)
           .frame(maxWidth: .infinity, alignment: .leading)
@@ -66,6 +25,70 @@ struct OverviewView: View {
       .frame(maxWidth: .infinity)
     }
     .navigationTitle("Overview")
+  }
+
+  var moreTools: some View {
+    HStack(alignment: .top, spacing: 14) {
+      Image(systemName: "square.grid.2x2")
+        .font(.title2).foregroundStyle(.tint).frame(width: 28)
+        .accessibilityHidden(true)
+      VStack(alignment: .leading, spacing: 3) {
+        Text("More tools, if you want them").font(.headline)
+        Text("Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence.")
+          .foregroundStyle(.secondary)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+      Spacer()
+      Button("Show More Tools") { model.setMoreTools(true) }
+    }
+    .padding(16)
+    .card()
+  }
+
+  @ViewBuilder
+  var tools: some View {
+    HStack(spacing: 12) {
+      StatTile(title: "Settings changed", value: String(localized: "\(model.appliedCount) of \(model.availableCount)"), link: model.appliedCount > 0 ? "See which ones" : "Browse settings") {
+        model.page = .group(TweakGroup.allCases.first { model.switchedOn(in: $0).on > 0 } ?? .privacy)
+      }
+      StatTile(title: "Apps running in the background", value: model.background.isEmpty ? L("None") : "\(model.background.count)", link: "See what they are") {
+        model.page = .background
+      }
+      StatTile(
+        title: "Space you can get back",
+        value: model.scanned ? UISize.of(model.storage.reduce(0) { $0 + $1.bytes }) : L("Not checked"),
+        link: model.scanned ? "Old installers and caches" : "Check now"
+      ) {
+        model.page = .storage
+        if !model.scanned && !model.scanning { model.scan() }
+      }
+    }
+    VStack(alignment: .leading, spacing: 10) {
+      Text("Or start with a preset").font(.headline)
+      VStack(spacing: 0) {
+        ForEach(Array(Preset.allCases.enumerated()), id: \.element) { i, preset in
+          if i > 0 { Divider().padding(.leading, 56) }
+          HStack(alignment: .top, spacing: 14) {
+            Image(systemName: preset == .recommended ? "checkmark.seal" : "hand.raised")
+              .font(.title2).foregroundStyle(.tint).frame(width: 28)
+            VStack(alignment: .leading, spacing: 3) {
+              Text(L(preset.title)).font(.headline)
+              Text(L(preset.summary)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+              Text("\(Tweaks.preset(preset).count) settings and Apple Intelligence off")
+                .font(.caption).foregroundStyle(.tertiary)
+            }
+            Spacer()
+            Button("Review…") {
+              model.choose(preset)
+              model.reviewing = true
+            }
+          }
+          .padding(14)
+        }
+      }
+      .card()
+      Footer("A preset adds to what's already applied and changes nothing until you review it.")
+    }
   }
 }
 
@@ -126,11 +149,19 @@ struct StatusHero: View {
           }
           Button("Change What's Kept On") { model.page = .intelligence }
         } else {
-          Button("Turn Off with Recommended Settings…") {
-            model.choose(.recommended)
-            model.reviewing = true
+          if model.showMoreTools {
+            Button("Turn Off with Recommended Settings…") {
+              model.choose(.recommended)
+              model.reviewing = true
+            }
+            .buttonStyle(.borderedProminent)
+          } else {
+            Button("Turn Off Apple Intelligence…") {
+              model.chooseAppleIntelligence()
+              model.reviewing = true
+            }
+            .buttonStyle(.borderedProminent)
           }
-          .buttonStyle(.borderedProminent)
           Button("Choose What to Turn Off") { model.page = .intelligence }
           Text("You'll see every change first.").font(.callout).foregroundStyle(.secondary)
         }

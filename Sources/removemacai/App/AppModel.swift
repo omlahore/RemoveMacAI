@@ -74,12 +74,24 @@ final class AppModel {
   var welcomePage = 0
   static let welcomeSeenKey = "WelcomeSeen"
 
+  /// Everything past Apple Intelligence stays out of the way until it's asked for.
+  var showMoreTools = false
+  static let moreToolsKey = "ShowMoreTools"
+
   static weak var shared: AppModel?
 
   init() {
     reload(resetChoices: true)
     AppModel.shared = self
     if !UserDefaults.standard.bool(forKey: Self.welcomeSeenKey) { showingWelcome = true }
+    showMoreTools = UserDefaults.standard.object(forKey: Self.moreToolsKey) as? Bool
+      ?? (!journal.entries.isEmpty || !snapshot.profile.tweaks.isEmpty)
+  }
+
+  func setMoreTools(_ on: Bool) {
+    showMoreTools = on
+    UserDefaults.standard.set(on, forKey: Self.moreToolsKey)
+    if !on, let page, page != .overview, page != .intelligence, page != .changes { self.page = .overview }
   }
 
   func openWelcome() {
@@ -177,6 +189,11 @@ final class AppModel {
   func choose(_ preset: Preset) {
     wanted.formUnion(Tweaks.preset(preset).map(\.id))
     aiOff = true
+  }
+
+  func chooseAppleIntelligence() {
+    aiOff = true
+    aiKept = []
   }
 
   var appliedCount: Int { states.values.filter { $0 == .applied }.count }

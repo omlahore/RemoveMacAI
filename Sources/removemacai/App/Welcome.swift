@@ -6,10 +6,10 @@ import SwiftUI
 struct WelcomeSheet: View {
   @Environment(AppModel.self) private var model
   @Environment(\.openURL) private var openURL
-  @State private var start: Start = .recommended
+  @State private var start: Start = .appleIntelligence
 
   enum Start: CaseIterable, Identifiable {
-    case recommended, privacy, own
+    case appleIntelligence, recommended, own
     var id: Self { self }
   }
 
@@ -115,14 +115,16 @@ struct WelcomeSheet: View {
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 8) {
           Text(title(option)).font(.headline)
-          if option == .recommended {
+          if option == .appleIntelligence {
             Text("Most people").font(.caption.weight(.semibold)).foregroundStyle(.green)
               .padding(.horizontal, 7).padding(.vertical, 2)
               .background(Capsule().fill(Color.green.opacity(0.15)))
           }
         }
         Text(summary(option)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-        Text(detail(option)).font(.caption).foregroundStyle(.tertiary)
+        if !detail(option).isEmpty {
+          Text(detail(option)).font(.caption).foregroundStyle(.tertiary)
+        }
       }
       Spacer(minLength: 0)
     }
@@ -134,16 +136,16 @@ struct WelcomeSheet: View {
 
   func title(_ option: Start) -> String {
     switch option {
+    case .appleIntelligence: return String(localized: "Just Apple Intelligence")
     case .recommended: return L(Preset.recommended.title)
-    case .privacy: return L(Preset.privacy.title)
     case .own: return String(localized: "I'll choose myself")
     }
   }
 
   func summary(_ option: Start) -> String {
     switch option {
+    case .appleIntelligence: return String(localized: "Turn off its features and delete its models. Nothing else on your Mac changes.")
     case .recommended: return L(Preset.recommended.summary)
-    case .privacy: return L(Preset.privacy.summary)
     case .own: return String(localized: "Start with nothing selected and pick from the sidebar.")
     }
   }
@@ -151,8 +153,8 @@ struct WelcomeSheet: View {
   func detail(_ option: Start) -> String {
     let models = model.modelTotal > 0 ? String(localized: " and \(UISize.of(model.modelTotal)) of models") : ""
     switch option {
+    case .appleIntelligence: return model.modelTotal > 0 ? String(localized: "Frees about \(UISize.of(model.modelTotal))") : ""
     case .recommended: return String(localized: "\(Tweaks.preset(.recommended).count) settings") + models
-    case .privacy: return String(localized: "\(Tweaks.preset(.privacy).count) settings") + models
     case .own: return String(localized: "Nothing is selected for you")
     }
   }
@@ -204,15 +206,19 @@ struct WelcomeSheet: View {
 
   func finish(_ choice: Start?) {
     model.closeWelcome()
-    let preset: Preset?
     switch choice {
-    case .recommended?: preset = .recommended
-    case .privacy?: preset = .privacy
-    case .own?: model.page = .intelligence; preset = nil
-    case nil: preset = nil
+    case .appleIntelligence?:
+      model.chooseAppleIntelligence()
+    case .recommended?:
+      model.setMoreTools(true)
+      model.choose(.recommended)
+    case .own?:
+      model.setMoreTools(true)
+      model.page = .intelligence
+      return
+    case nil:
+      return
     }
-    guard let preset else { return }
-    model.choose(preset)
     // A second sheet can't open while this one is still closing.
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.reviewing = true }
   }

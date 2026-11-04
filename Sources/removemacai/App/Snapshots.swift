@@ -17,6 +17,10 @@
         try? await Task.sleep(nanoseconds: 2_000_000_000)
         guard let model = AppModel.shared else { return }
         model.showingWelcome = false
+        model.showMoreTools = false
+        try? await Task.sleep(nanoseconds: 800_000_000)
+        save("overview-lite", dir)
+        model.showMoreTools = true
         model.scan()
         while model.scanning || !model.scanned { try? await Task.sleep(nanoseconds: 300_000_000) }
         for (name, page) in pages {

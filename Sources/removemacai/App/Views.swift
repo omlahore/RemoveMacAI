@@ -47,28 +47,39 @@ struct Sidebar: View {
     @Bindable var model = model
     List(selection: $model.page) {
       row(.overview)
-      Section("Turn Off") {
+      if model.showMoreTools {
+        Section("Turn Off") {
+          row(.intelligence, badge: model.aiPending ? Text("1") : nil)
+          ForEach([TweakGroup.privacy, .annoyances, .apps], id: \.self) { group in
+            row(.group(group), badge: count(group))
+          }
+          row(.background)
+        }
+        Section("Customize") {
+          ForEach([TweakGroup.finder, .windows, .typing], id: \.self) { group in
+            row(.group(group), badge: count(group))
+          }
+        }
+        Section("Clean Up") {
+          row(.storage)
+          row(.changes)
+        }
+      } else {
         row(.intelligence, badge: model.aiPending ? Text("1") : nil)
-        ForEach([TweakGroup.privacy, .annoyances, .apps], id: \.self) { group in
-          row(.group(group), badge: count(group))
-        }
-        row(.background)
-      }
-      Section("Customize") {
-        ForEach([TweakGroup.finder, .windows, .typing], id: \.self) { group in
-          row(.group(group), badge: count(group))
-        }
-      }
-      Section("Clean Up") {
-        row(.storage)
         row(.changes)
       }
     }
     .listStyle(.sidebar)
     .safeAreaInset(edge: .bottom, spacing: 0) {
-      Button { model.openWelcome() } label: {
-        Label("How RemoveMacAI Works", systemImage: "questionmark.circle")
-          .frame(maxWidth: .infinity, alignment: .leading)
+      VStack(alignment: .leading, spacing: 10) {
+        Button { model.setMoreTools(!model.showMoreTools) } label: {
+          Label(model.showMoreTools ? "Hide More Tools" : "Show More Tools", systemImage: "square.grid.2x2")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        Button { model.openWelcome() } label: {
+          Label("How RemoveMacAI Works", systemImage: "questionmark.circle")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
       }
       .buttonStyle(.plain)
       .foregroundStyle(.secondary)
