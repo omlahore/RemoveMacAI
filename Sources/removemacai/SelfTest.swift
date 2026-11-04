@@ -549,6 +549,16 @@ func selfTest() -> Bool {
       "switching a partly applied tweak on and off undoes it")
   }
 
+  let macUpdate: [String: Any] = ["Display Name": "macOS 27.2", "Display Version": "27.2"]
+  let toolsUpdate: [String: Any] = ["Display Name": "Command Line Tools for Xcode 27.2", "Display Version": "27.2"]
+  check(PendingUpdate.name(in: ["RecommendedUpdates": [toolsUpdate, macUpdate]], running: "27.0") == "macOS 27.2",
+    "a pending macOS update is found among other updates")
+  check(PendingUpdate.name(in: ["RecommendedUpdates": [toolsUpdate]], running: "27.0") == nil
+    && PendingUpdate.name(in: ["RecommendedUpdates": [macUpdate]], running: "27.2") == nil
+    && PendingUpdate.name(in: [:], running: "27.0") == nil,
+    "other updates, the running version and an empty list don't count as a pending macOS update")
+  check(PendingUpdate.slowedBy(Profile.Installed()) == nil, "no update warning without the profile")
+
   print(failed == 0 ? Term.green("all checks passed") : Term.red("\(failed) failed"))
   return failed == 0
 }

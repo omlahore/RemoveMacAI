@@ -36,6 +36,7 @@ enum Commands {
       print(Term.dim("  macOS removes deleted model files itself, so System Settings can count them for a while."))
     }
     print()
+    warnPendingUpdate()
     if isOff() {
       print(Term.green("Apple Intelligence is off.") + Term.dim(" Undo with: \(undo)"))
     } else {
@@ -95,6 +96,7 @@ enum Commands {
         print(Term.dim("macOS removes deleted model files itself, so System Settings can count them for a while."))
       }
       warnKeptButOff(keep)
+      warnPendingUpdate()
       print(Term.dim("Check it with: removemacai status    Undo with: \(undo)"))
       return true
     }
@@ -178,6 +180,7 @@ enum Commands {
       print(Term.yellow("Incomplete.") + " " + offSummary + " The profile remains installed; model removal is incomplete.")
     }
     warnKeptButOff(keep)
+    warnPendingUpdate()
     print(Term.dim("Check it with: removemacai status    Undo with: \(undo)"))
     return removalComplete
   }
@@ -233,6 +236,13 @@ enum Commands {
     for feature in Catalog.availableFeatures where keep.contains(feature.id) && Settings.state(feature) == .off {
       print(Term.yellow("!") + " \(feature.title) is kept, but it is switched off. Turn it on in System Settings.")
     }
+  }
+
+  static func warnPendingUpdate() {
+    guard let update = PendingUpdate.slowedBy(Profile.installed()) else { return }
+    print(Term.yellow("!") + " \(update) is ready to install. Its download can stop for about 2 hours of awake time while macOS retries the blocked models, then it carries on by itself.")
+    print(Term.dim("  To skip the wait: removemacai on, restart, update, then removemacai off."))
+    print()
   }
 
   /// Injectable operations let self-tests verify failures without contacting the asset service.

@@ -46,6 +46,7 @@ final class AppModel {
   var modelsAvailable = true
   var loadingModels = true
   var journal = Engine.loadJournal()
+  var slowedUpdate: String?
 
   // What the person wants.
   var wanted: Set<String> = []
@@ -103,6 +104,7 @@ final class AppModel {
     snapshot = Snapshot()
     states = Dictionary(uniqueKeysWithValues: Tweaks.all.map { ($0.id, snapshot.state($0)) })
     journal = Engine.loadJournal()
+    slowedUpdate = PendingUpdate.slowedBy(snapshot.profile)
     if resetChoices {
       wanted = Set(states.filter { $0.value == .applied }.map(\.key))
       touched = []

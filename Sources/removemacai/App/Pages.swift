@@ -9,6 +9,7 @@ struct OverviewView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 18) {
         StatusHero()
+        if let update = model.slowedUpdate { UpdateNotice(name: update) }
         HStack(spacing: 12) {
           StatTile(title: "Settings changed", value: String(localized: "\(model.appliedCount) of \(model.availableCount)"), link: model.appliedCount > 0 ? "See which ones" : "Browse settings") {
             model.page = .group(TweakGroup.allCases.first { model.switchedOn(in: $0).on > 0 } ?? .privacy)
@@ -65,6 +66,26 @@ struct OverviewView: View {
       .frame(maxWidth: .infinity)
     }
     .navigationTitle("Overview")
+  }
+}
+
+/// A macOS update is waiting, and its download will stop on the models the profile blocks.
+struct UpdateNotice: View {
+  let name: String
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 6) {
+      Label("\(name) may look stuck while it downloads", systemImage: "exclamationmark.triangle")
+        .font(.headline)
+      Text("Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again.")
+        .foregroundStyle(.secondary)
+        .fixedSize(horizontal: false, vertical: true)
+      Link("Read more on GitHub", destination: URL(string: "https://github.com/omlahore/RemoveMacAI/issues/109")!)
+        .font(.callout)
+    }
+    .padding(16)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .card()
   }
 }
 

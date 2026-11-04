@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- When a macOS update is waiting and the profile blocks model downloads, `removemacai status`, `off` and the Overview say that its download can stop for about 2 hours of awake time, and how to skip the wait (#109). The README's FAQ covers it too. It reads what Software Update already found, so it makes no network request.
 - The app is translated into Turkish. Contributed by yigitbuyukeren in #113.
 - `removemacai status` says when a model set's folder still holds files, instead of showing none because Apple's asset service reports the set as gone (#45).
 - Background Items marks items left over from a deleted app, whose program is no longer on the Mac, and has a minus button to stop one and move it to the Trash, from where it can be dragged back. `removemacai background` marks them as left over too (#66).

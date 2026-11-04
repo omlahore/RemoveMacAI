@@ -160,6 +160,9 @@ Open a photo in Photos, choose **Edit**, then **Tools > Clean Up**. Photos Clean
 **Do macOS updates undo the changes?**
 The profile persists across updates. If an update resets one of the other settings, RemoveMacAI shows it as not applied and you can apply it again.
 
+**A macOS update stops partway through its download.**
+Software Update finishes the update itself, then tries to fetch the Apple Intelligence models the profile blocks and keeps retrying them ([#109](https://github.com/omlahore/RemoveMacAI/issues/109)). After about 2 hours with the Mac awake it gives up on them and installs the update, with the profile still on. Sleep pauses that timer. To skip the wait, run `removemacai on`, restart, update, then run `removemacai off`. The restart matters, because the stuck download keeps retrying the old address until then. macOS can start fetching the models again while the profile is off, and `removemacai off` deletes whatever it got.
+
 **Storage settings still lists Apple Intelligence after the models were deleted.**
 Apple's asset service releases the models right away, but macOS deletes the files on its own schedule. Until then, System Settings > General > Storage keeps counting them under Apple Intelligence.
 
