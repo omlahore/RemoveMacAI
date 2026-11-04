@@ -136,7 +136,7 @@ enum Models {
       case .done: break
       case .locked: failed.append((name, lockedReason))
       case .noAnswer: failed.append((name, "no answer in \(Int(timeout)) seconds"))
-      case .failed(let reason): failed.append((name, reason))
+      case .failed(let reason): if present(name) { failed.append((name, reason)) }
       }
     }
     return failed
