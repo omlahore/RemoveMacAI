@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The app starts on Apple Intelligence alone. The Overview and the sidebar show just that until you choose Show More Tools, and the first-run guide offers Just Apple Intelligence first. Anyone who already changed other settings still sees everything. The command line doesn't change.
+- When macOS keeps files out of reach during a Storage clean-up, the app offers to open the Full Disk Access settings (#66).
+- Background items are scanned off the main thread, so a slow scan can't hold up the window (#70).
 - Removal no longer reports an error from Apple's asset service when the models it was deleting are gone anyway (#104).
 - When a macOS update is waiting and the profile blocks model downloads, `removemacai status`, `off` and the Overview say that its download can stop for about 2 hours of awake time, and how to skip the wait (#109). The README's FAQ covers it too. It reads what Software Update already found, so it makes no network request.
 - The app is translated into Turkish. Contributed by yigitbuyukeren in #113.

@@ -560,6 +560,17 @@ struct StorageView: View {
               .buttonStyle(.borderedProminent)
               .disabled(model.storageChosen.isEmpty || model.cleaning)
           }
+          if model.cleanProtected {
+            HStack {
+              Text("macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them.")
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+              Spacer()
+              Button("Open Full Disk Access Settings") {
+                NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")!)
+              }
+            }
+          }
         }
       }
     }

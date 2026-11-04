@@ -65,6 +65,7 @@ final class AppModel {
   var scanned = false
   var cleaning = false
   var cleanMessage: String?
+  var cleanProtected = false
 
   var reviewing = false
   var run: RunState?
@@ -372,6 +373,7 @@ final class AppModel {
   func scan() {
     scanning = true
     cleanMessage = nil
+    cleanProtected = false
     Task.detached(priority: .userInitiated) {
       let items = Storage.scan()
       await MainActor.run {
@@ -413,6 +415,7 @@ final class AppModel {
         self.storage = items
         self.storageChosen = []
         self.cleanMessage = finalMessage
+        self.cleanProtected = result.protected > 0
       }
     }
   }
