@@ -436,3 +436,15 @@
 "The removemacai command is installed." = "El comando removemacai está instalado.";
 "Open a new Terminal window and run removemacai status." = "Abre una ventana nueva de Terminal y ejecuta removemacai status.";
 "The removemacai command wasn't installed." = "El comando removemacai no se instaló.";
+"More tools, if you want them" = "Más herramientas, si las quieres";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "Detén las analíticas y los anuncios, reduce las ventanas emergentes, cambia ajustes del Finder y del Dock, desactiva ítems en segundo plano de otras apps y recupera espacio en disco. No necesitas nada de esto para quitar Apple Intelligence.";
+"Show More Tools" = "Mostrar más herramientas";
+"Hide More Tools" = "Ocultar más herramientas";
+"%@ may look stuck while it downloads" = "%@ puede parecer atascado mientras se descarga";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "Actualización de Software sigue reintentando los modelos que RemoveMacAI bloquea. Tras unas 2 horas con el Mac despierto, continúa por sí solo. Para no esperar, vuelve a activar Apple Intelligence aquí, reinicia, actualiza y desactívalo de nuevo.";
+"Read more on GitHub" = "Más información en GitHub";
+"Turn Off Apple Intelligence…" = "Desactivar Apple Intelligence…";
+"Just Apple Intelligence" = "Solo Apple Intelligence";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "Desactiva sus funciones y elimina sus modelos. Nada más cambia en tu Mac.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS dejó algunos archivos fuera de alcance. Con Acceso total al disco, RemoveMacAI puede moverlos.";
+"Open Full Disk Access Settings" = "Abrir ajustes de Acceso total al disco";

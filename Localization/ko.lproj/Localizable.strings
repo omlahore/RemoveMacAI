@@ -436,3 +436,15 @@
 "The removemacai command is installed." = "removemacai 명령이 설치되었습니다.";
 "Open a new Terminal window and run removemacai status." = "새 터미널 창을 열고 removemacai status를 실행하세요.";
 "The removemacai command wasn't installed." = "removemacai 명령이 설치되지 않았습니다.";
+"More tools, if you want them" = "원하는 경우 더 많은 도구";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "분석과 광고를 중단하고, 팝업을 줄이고, Finder와 Dock 설정을 바꾸고, 다른 앱의 백그라운드 항목을 끄고, 디스크 공간을 되찾습니다. Apple Intelligence를 제거하는 데는 이 중 어느 것도 필요하지 않습니다.";
+"Show More Tools" = "더 많은 도구 표시";
+"Hide More Tools" = "더 많은 도구 숨기기";
+"%@ may look stuck while it downloads" = "%@ 다운로드가 멈춘 것처럼 보일 수 있습니다";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "소프트웨어 업데이트가 RemoveMacAI에서 차단한 모델을 계속 다시 시도합니다. Mac이 깨어 있는 상태로 약 2시간이 지나면 자동으로 계속 진행됩니다. 기다리지 않으려면 여기에서 Apple Intelligence를 다시 켜고, 재시동하고, 업데이트한 다음 다시 끄십시오.";
+"Read more on GitHub" = "GitHub에서 자세히 읽기";
+"Turn Off Apple Intelligence…" = "Apple Intelligence 끄기…";
+"Just Apple Intelligence" = "Apple Intelligence만";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "기능을 끄고 모델을 삭제합니다. Mac의 다른 부분은 바뀌지 않습니다.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS가 일부 파일에 대한 접근을 막았습니다. 전체 디스크 접근 권한이 있으면 RemoveMacAI가 이 파일을 옮길 수 있습니다.";
+"Open Full Disk Access Settings" = "전체 디스크 접근 권한 설정 열기";

@@ -436,3 +436,15 @@
 "The removemacai command is installed." = "O comando removemacai está instalado.";
 "Open a new Terminal window and run removemacai status." = "Abra uma nova janela do Terminal e execute removemacai status.";
 "The removemacai command wasn't installed." = "O comando removemacai não foi instalado.";
+"More tools, if you want them" = "Mais ferramentas, se você quiser";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "Pare as análises e os anúncios, reduza os pop-ups, mude ajustes do Finder e do Dock, desative itens em segundo plano de outros apps e recupere espaço em disco. Nada disso é necessário para remover o Apple Intelligence.";
+"Show More Tools" = "Mostrar Mais Ferramentas";
+"Hide More Tools" = "Ocultar Mais Ferramentas";
+"%@ may look stuck while it downloads" = "%@ pode parecer travado durante o download";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "A Atualização de Software continua tentando baixar os modelos que o RemoveMacAI bloqueia. Depois de cerca de 2 horas com o Mac acordado, ela continua sozinha. Para não esperar, reative o Apple Intelligence aqui, reinicie, atualize e desative-o de novo.";
+"Read more on GitHub" = "Leia mais no GitHub";
+"Turn Off Apple Intelligence…" = "Desativar o Apple Intelligence…";
+"Just Apple Intelligence" = "Só o Apple Intelligence";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "Desativa os recursos e apaga os modelos. Nada mais muda no seu Mac.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "O macOS deixou alguns arquivos fora de alcance. Com Acesso Total ao Disco, o RemoveMacAI pode movê-los.";
+"Open Full Disk Access Settings" = "Abrir Ajustes de Acesso Total ao Disco";

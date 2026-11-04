@@ -435,3 +435,15 @@
 "The removemacai command is installed." = "removemacai komutu yüklendi.";
 "Open a new Terminal window and run removemacai status." = "Yeni bir Terminal penceresi açın ve removemacai status komutunu çalıştırın.";
 "The removemacai command wasn't installed." = "removemacai komutu yüklenmedi.";
+"More tools, if you want them" = "İsterseniz daha fazla araç";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "Analizleri ve reklamları durdurun, açılır pencereleri azaltın, Finder ve Dock ayarlarını değiştirin, diğer uygulamaların arka plan öğelerini kapatın ve disk alanı kazanın. Apple Intelligence'ı kaldırmak için bunların hiçbirine gerek yok.";
+"Show More Tools" = "Daha Fazla Aracı Göster";
+"Hide More Tools" = "Daha Fazla Aracı Gizle";
+"%@ may look stuck while it downloads" = "%@ indirilirken takılmış gibi görünebilir";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "Yazılım Güncelleme, RemoveMacAI'ın engellediği modelleri indirmeyi denemeye devam eder. Mac'iniz yaklaşık 2 saat uyanık kaldıktan sonra kendiliğinden devam eder. Beklememek için Apple Intelligence'ı burada yeniden açın, Mac'i yeniden başlatın, güncelleyin ve sonra tekrar kapatın.";
+"Read more on GitHub" = "GitHub'da daha fazlasını okuyun";
+"Turn Off Apple Intelligence…" = "Apple Intelligence'ı Kapat…";
+"Just Apple Intelligence" = "Yalnızca Apple Intelligence";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "Özelliklerini kapatır ve modellerini siler. Mac'inizde başka hiçbir şey değişmez.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS bazı dosyalara erişimi engelledi. Tam Disk Erişimi, RemoveMacAI'ın bunları taşımasını sağlayabilir.";
+"Open Full Disk Access Settings" = "Tam Disk Erişimi Ayarlarını Aç";

@@ -356,6 +356,12 @@ enum Commands {
     }
   }
 
+  static func openFullDiskAccessSettings() {
+    if let u = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+      NSWorkspace.shared.open(u)
+    }
+  }
+
   static func waitFor(_ what: String, _ condition: () -> Bool, minutes: Double = 10) -> Bool {
     let spinner = Array("⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏")
     let deadline = Date().addingTimeInterval(minutes * 60)

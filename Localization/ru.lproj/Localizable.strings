@@ -436,3 +436,15 @@
 "The removemacai command is installed." = "Команда removemacai установлена.";
 "Open a new Terminal window and run removemacai status." = "Откройте новое окно Терминала и выполните removemacai status.";
 "The removemacai command wasn't installed." = "Команда removemacai не установлена.";
+"More tools, if you want them" = "Другие инструменты, если нужны";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "Отключите аналитику и рекламу, уберите всплывающие окна, измените настройки Finder и Dock, выключите фоновые объекты других приложений и освободите место на диске. Для удаления Apple Intelligence ничего из этого не требуется.";
+"Show More Tools" = "Показать другие инструменты";
+"Hide More Tools" = "Скрыть другие инструменты";
+"%@ may look stuck while it downloads" = "%@ может выглядеть зависшим при загрузке";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "Обновление ПО снова и снова пытается загрузить модели, которые блокирует RemoveMacAI. Примерно через 2 часа, пока Mac не спит, оно продолжит само. Чтобы не ждать, включите Apple Intelligence здесь, перезагрузите Mac, установите обновление и снова выключите его.";
+"Read more on GitHub" = "Подробнее на GitHub";
+"Turn Off Apple Intelligence…" = "Выключить Apple Intelligence…";
+"Just Apple Intelligence" = "Только Apple Intelligence";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "Выключает его функции и удаляет модели. Больше на вашем Mac ничего не меняется.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS закрыла доступ к некоторым файлам. С полным доступом к диску RemoveMacAI сможет их переместить.";
+"Open Full Disk Access Settings" = "Открыть настройки полного доступа к диску";

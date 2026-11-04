@@ -436,3 +436,15 @@
 "The removemacai command is installed." = "La commande removemacai est installée.";
 "Open a new Terminal window and run removemacai status." = "Ouvrez une nouvelle fenêtre de Terminal et exécutez removemacai status.";
 "The removemacai command wasn't installed." = "La commande removemacai n'a pas été installée.";
+"More tools, if you want them" = "D'autres outils, si vous le souhaitez";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "Arrêtez les analyses et les publicités, réduisez les fenêtres surgissantes, modifiez les réglages du Finder et du Dock, désactivez les éléments en arrière-plan d'autres apps et récupérez de l'espace disque. Rien de tout cela n'est nécessaire pour supprimer Apple Intelligence.";
+"Show More Tools" = "Afficher plus d'outils";
+"Hide More Tools" = "Masquer les outils supplémentaires";
+"%@ may look stuck while it downloads" = "%@ peut sembler bloqué pendant le téléchargement";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "Mise à jour logicielle réessaie sans cesse de récupérer les modèles bloqués par RemoveMacAI. Après environ 2 heures avec votre Mac en éveil, elle continue d'elle-même. Pour éviter l'attente, réactivez Apple Intelligence ici, redémarrez, installez la mise à jour, puis désactivez-le à nouveau.";
+"Read more on GitHub" = "En savoir plus sur GitHub";
+"Turn Off Apple Intelligence…" = "Désactiver Apple Intelligence…";
+"Just Apple Intelligence" = "Apple Intelligence uniquement";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "Désactive ses fonctionnalités et supprime ses modèles. Rien d'autre ne change sur votre Mac.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS a gardé certains fichiers hors de portée. L'accès complet au disque peut permettre à RemoveMacAI de les déplacer.";
+"Open Full Disk Access Settings" = "Ouvrir les réglages d'accès complet au disque";

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The app is translated into Simplified Chinese (#54). Contributed by tc54188 in #92. The strings Hindi, Italian, Japanese and Urdu were missing are filled in too.
 - The app starts on Apple Intelligence alone. The Overview and the sidebar show just that until you choose Show More Tools, and the first-run guide offers Just Apple Intelligence first. Anyone who already changed other settings still sees everything. The command line doesn't change.
 - When macOS keeps files out of reach during a Storage clean-up, the app offers to open the Full Disk Access settings (#66).
 - Background items are scanned off the main thread, so a slow scan can't hold up the window (#70).

@@ -436,3 +436,15 @@
 "The removemacai command is installed." = "Der Befehl removemacai ist installiert.";
 "Open a new Terminal window and run removemacai status." = "Öffne ein neues Terminalfenster und führe removemacai status aus.";
 "The removemacai command wasn't installed." = "Der Befehl removemacai wurde nicht installiert.";
+"More tools, if you want them" = "Weitere Werkzeuge, falls du sie möchtest";
+"Stop analytics and ads, quiet the pop-ups, change Finder and Dock settings, switch off other apps' background items and get disk space back. You don't need any of it to remove Apple Intelligence." = "Analysen und Werbung stoppen, Pop-ups reduzieren, Finder- und Dock-Einstellungen ändern, Hintergrundobjekte anderer Apps ausschalten und Speicherplatz zurückholen. Nichts davon brauchst du, um Apple Intelligence zu entfernen.";
+"Show More Tools" = "Weitere Werkzeuge einblenden";
+"Hide More Tools" = "Weitere Werkzeuge ausblenden";
+"%@ may look stuck while it downloads" = "%@ kann beim Laden hängend wirken";
+"Software Update keeps retrying the models RemoveMacAI blocks. After about 2 hours with your Mac awake, it carries on by itself. To skip the wait, turn Apple Intelligence back on here, restart, update, then turn it off again." = "Softwareupdate versucht immer wieder, die von RemoveMacAI blockierten Modelle zu laden. Nach etwa 2 Stunden mit wachem Mac läuft es von selbst weiter. Wenn du nicht warten willst, schalte Apple Intelligence hier wieder ein, starte neu, aktualisiere und schalte es dann wieder aus.";
+"Read more on GitHub" = "Mehr dazu auf GitHub";
+"Turn Off Apple Intelligence…" = "Apple Intelligence ausschalten…";
+"Just Apple Intelligence" = "Nur Apple Intelligence";
+"Turn off its features and delete its models. Nothing else on your Mac changes." = "Schaltet die Funktionen aus und löscht die Modelle. Sonst ändert sich nichts auf deinem Mac.";
+"macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS hat einige Dateien gesperrt. Mit Festplattenvollzugriff kann RemoveMacAI sie bewegen.";
+"Open Full Disk Access Settings" = "Einstellungen für Festplattenvollzugriff öffnen";

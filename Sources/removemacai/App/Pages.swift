@@ -566,9 +566,7 @@ struct StorageView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
               Spacer()
-              Button("Open Full Disk Access Settings") {
-                NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")!)
-              }
+              Button("Open Full Disk Access Settings") { Commands.openFullDiskAccessSettings() }
             }
           }
         }
