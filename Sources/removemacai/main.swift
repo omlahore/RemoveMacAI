@@ -2,8 +2,8 @@ import Foundation
 
 let usage = """
   RemoveMacAI \(version)
-  Debloats macOS: turns Apple Intelligence off, deletes its models, and turns
-  off analytics, ads and the rest. Every change can be undone.
+  Turns Apple Intelligence off and deletes its models. Optional tweaks turn off
+  analytics, ads and the rest. Every change can be undone.
 
   Apple Intelligence
     removemacai                 show what is on, then turn it off (asks first)

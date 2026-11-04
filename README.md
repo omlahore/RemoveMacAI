@@ -11,7 +11,7 @@
 
 # RemoveMacAI
 
-Debloat macOS. Turn off Apple Intelligence and delete its models, stop the analytics and ads, quiet the pop-ups, switch off other apps' background updaters and get disk space back. You see every change before it happens, and every change can be undone.
+Turn off Apple Intelligence and delete its models. The app starts with just that. If you want to debloat further, it can also stop the analytics and ads, quiet the pop-ups, switch off other apps' background updaters and get disk space back. You see every change before it happens, and every change can be undone.
 
 <p align="center">
   <a href="https://github.com/omlahore/RemoveMacAI/releases/latest/download/RemoveMacAI.zip"><img src="docs/download.svg" alt="Download for Mac" width="236" height="56"></a>
@@ -61,6 +61,8 @@ The app and the command line are the same program and share the same undo histor
     <img src="docs/screens/privacy-light.webp" alt="Privacy settings in RemoveMacAI" width="840">
   </picture>
 </p>
+
+The app opens on Apple Intelligence alone. **Show More Tools** in the sidebar brings in the rest.
 
 | Section | What you can turn off or change |
 |---|---|
@@ -165,6 +167,9 @@ Software Update finishes the update itself, then tries to fetch the Apple Intell
 
 **Storage settings still lists Apple Intelligence after the models were deleted.**
 Apple's asset service releases the models right away, but macOS deletes the files on its own schedule. Until then, System Settings > General > Storage keeps counting them under Apple Intelligence.
+
+**Spotlight lost its new look, clipboard history or conversions.**
+Reports so far point at two settings. In macOS 27 the Spotlight window runs as a process named Siri, so turning Siri off can change it: run `removemacai off --keep siri` and restart to check. Keeping Siri also keeps the foundation models, about 13 GB. If only web results and conversions are missing, try `removemacai undo spotlight-web`, which Recommended includes.
 
 **Why is a process named Siri still running?**
 In macOS 27 the Spotlight window runs as a process named Siri. Some system services also stay loaded; they are protected by System Integrity Protection.
