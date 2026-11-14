@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
+
+This release includes everything from 1.2.0-beta.1, so RemoveMacAI now runs on macOS 15.1 (Sequoia) and later, not just 26 and 27 (#45).
 
 - The app is translated into Simplified Chinese (#54). Contributed by tc54188 in #92. The strings Hindi, Italian, Japanese and Urdu were missing are filled in too.
 - The app starts on Apple Intelligence alone. The Overview and the sidebar show just that until you choose Show More Tools, and the first-run guide offers Just Apple Intelligence first. Anyone who already changed other settings still sees everything. The command line doesn't change.
