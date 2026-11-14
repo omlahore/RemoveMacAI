@@ -321,6 +321,8 @@ func selfTest() -> Bool {
   }
 
   check(Storage.uniqueName("a.app", in: "/nonexistent-folder") == "a.app", "trash names stay as they are when free")
+  check(Storage.uniqueName("a.db", in: "/nonexistent-folder", avoiding: ["a.db"]) == "a 2.db", "a name already given to another item in the batch is numbered")
+  check(Storage.uniqueName("a.db", in: "/nonexistent-folder", avoiding: ["a.db", "a 2.db"]) == "a 3.db", "numbering skips names already given in the batch")
   let script = BackgroundItem(label: "com.example.sync", plist: "", program: "/bin/bash",
     arguments: ["/bin/bash", "/Users/x/bin/sync.sh"], system: false)
   let helper = BackgroundItem(label: "dev.orbstack.OrbStack.privhelper", plist: "",
