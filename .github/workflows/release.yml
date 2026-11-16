@@ -40,5 +40,6 @@ jobs:
         run: |
           version="${GITHUB_REF_NAME#v}"
           awk -v v="## $version" '$0 == v {on=1; next} /^## / {on=0} on' CHANGELOG.md > notes.md
+          printf '\nIf RemoveMacAI is useful to you, you can [sponsor it on GitHub](https://github.com/sponsors/omlahore).\n' >> notes.md
           pre=""; [[ "$GITHUB_REF_NAME" == *-* ]] && pre="--prerelease"
           gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes-file notes.md $pre

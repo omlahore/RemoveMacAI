@@ -66,6 +66,8 @@ final class AppModel {
   var cleaning = false
   var cleanMessage: String?
   var cleanProtected = false
+  /// A clean-up that got space back with no problems, so the page can mention sponsoring.
+  var cleanThanks = false
 
   var reviewing = false
   var run: RunState?
@@ -374,6 +376,7 @@ final class AppModel {
     scanning = true
     cleanMessage = nil
     cleanProtected = false
+    cleanThanks = false
     Task.detached(priority: .userInitiated) {
       let items = Storage.scan()
       await MainActor.run {
@@ -410,12 +413,14 @@ final class AppModel {
       }
       if !result.problems.isEmpty { message += "\n" + result.problems.joined(separator: "\n") }
       let finalMessage = message
+      let thanks = result.problems.isEmpty && (trashedTotal - left > 0 || !permanent.isEmpty)
       await MainActor.run {
         self.cleaning = false
         self.storage = items
         self.storageChosen = []
         self.cleanMessage = finalMessage
         self.cleanProtected = result.protected > 0
+        self.cleanThanks = thanks
       }
     }
   }

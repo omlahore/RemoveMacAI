@@ -233,6 +233,9 @@ enum TweakCommands {
     if trashed > 0 { print(Term.green("✓") + " Moved to the Trash. Empty the Trash to free about \(Term.size(trashed)).") }
     if !permanent.isEmpty && result.problems.isEmpty { print(Term.green("✓") + " Deleted " + permanent.map(\.title).joined(separator: " and ") + ".") }
     if result.protected > 0 { print(Term.dim("  \(result.protected) item(s) macOS protects stayed where they were.")) }
+    if result.problems.isEmpty && trashed > 0 {
+      print(Term.dim("I make RemoveMacAI by myself. If it was useful, you can sponsor it: https://github.com/sponsors/omlahore"))
+    }
     return result.problems.isEmpty
   }
 

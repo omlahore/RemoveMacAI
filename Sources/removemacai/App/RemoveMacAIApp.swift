@@ -29,6 +29,8 @@ struct RemoveMacAIApp: App {
         Divider()
         Link("RemoveMacAI on GitHub", destination: URL(string: "https://github.com/omlahore/RemoveMacAI")!)
         Link("Report a Problem", destination: URL(string: "https://github.com/omlahore/RemoveMacAI/issues/new/choose")!)
+        Divider()
+        Link("Sponsor RemoveMacAI", destination: URL(string: "https://github.com/sponsors/omlahore")!)
       }
     }
   }

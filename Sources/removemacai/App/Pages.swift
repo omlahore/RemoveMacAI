@@ -550,7 +550,12 @@ struct StorageView: View {
         Section {
           HStack {
             if let message = model.cleanMessage {
-              Text(message).foregroundStyle(.secondary)
+              VStack(alignment: .leading, spacing: 4) {
+                Text(message).foregroundStyle(.secondary)
+                if model.cleanThanks {
+                  Link("Sponsor on GitHub", destination: URL(string: "https://github.com/sponsors/omlahore")!)
+                }
+              }
             } else {
               Text(model.storageChosen.isEmpty ? "Nothing selected" : "Selected: \(UISize.of(model.chosenBytes))").monospacedDigit()
             }

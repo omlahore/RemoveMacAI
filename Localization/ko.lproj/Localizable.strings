@@ -448,3 +448,4 @@
 "Turn off its features and delete its models. Nothing else on your Mac changes." = "기능을 끄고 모델을 삭제합니다. Mac의 다른 부분은 바뀌지 않습니다.";
 "macOS kept some files out of reach. Full Disk Access can let RemoveMacAI move them." = "macOS가 일부 파일에 대한 접근을 막았습니다. 전체 디스크 접근 권한이 있으면 RemoveMacAI가 이 파일을 옮길 수 있습니다.";
 "Open Full Disk Access Settings" = "전체 디스크 접근 권한 설정 열기";
+"Sponsor RemoveMacAI" = "RemoveMacAI 후원";
