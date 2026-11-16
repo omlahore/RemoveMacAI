@@ -25,6 +25,8 @@ Built on [pared](https://github.com/4evy/pared) by 4evy, who did the hard work f
 
 [The Verge](https://www.theverge.com/ai-artificial-intelligence/1004672/mac-delete-apple-intelligence-ai-tool), [Ars Technica](https://arstechnica.com/apple/2026/10/command-line-tool-quickly-removes-apple-intelligence-from-macos-27/), [The Register](https://www.theregister.com/ai-and-ml/2026/10/05/get-rid-of-apples-ai-bloatware-and-reclaim-12-gb-of-storage-with-this-open-source-tool/5301213), [MacRumors](https://www.macrumors.com/2026/10/05/apple-intelligence-removal-tool-frees-mac-storage/), [AppleInsider](https://appleinsider.com/articles/26/10/05/dumb-down-your-mac-save-12gb-by-removing-apple-intelligence) and [Help Net Security](https://www.helpnetsecurity.com/2026/10/05/removemacai-turn-off-apple-intelligence/) have written about RemoveMacAI, and [Daring Fireball](https://daringfireball.net/linked/2026/10/06/cli-tool-removes-apple-intelligence-from-macos-27) linked to it.
 
+RemoveMacAI is free, and I make it on my own. If it helped you, you can [sponsor it on GitHub](https://github.com/sponsors/omlahore).
+
 ## Install
 
 ### The app
@@ -215,7 +217,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ## Support
 
-If RemoveMacAI is useful to you, you can [sponsor it on GitHub](https://github.com/sponsors/omlahore).
+If RemoveMacAI is useful to you, you can [sponsor it on GitHub](https://github.com/sponsors/omlahore). If your company uses it, the company tier puts your logo here.
 
 ## Author
 

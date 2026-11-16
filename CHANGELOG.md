@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- The Storage page and `removemacai clean` mention sponsoring after a clean-up that got space back, the way a finished run already did, and the Help menu has a Sponsor RemoveMacAI item.
+
 ## 1.2.0
 
 This release includes everything from 1.2.0-beta.1, so RemoveMacAI now runs on macOS 15.1 (Sequoia) and later, not just 26 and 27 (#45).
