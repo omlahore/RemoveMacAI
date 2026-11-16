@@ -1,0 +1,72 @@
+{
+  "$schema": "https://floss.fund/schema/v1.0.0/funding.schema.json#",
+  "version": "v1.0.0",
+  "entity": {
+    "type": "individual",
+    "role": "owner",
+    "name": "Om Lahore",
+    "email": "omlahore47@gmail.com",
+    "phone": "",
+    "description": "I'm a software developer in India. I build and maintain RemoveMacAI on my own, and I contribute to cloud native open source projects.",
+    "webpageUrl": {
+      "url": "https://github.com/omlahore",
+      "wellKnown": ""
+    }
+  },
+  "projects": [
+    {
+      "guid": "removemacai",
+      "name": "RemoveMacAI",
+      "description": "RemoveMacAI turns off Apple Intelligence on a Mac and deletes its models. It can also stop analytics and ads, quiet pop-ups, switch off other apps' background updaters and get disk space back. It shows every change before making it, and every change can be undone. It's a native app and a command line tool, and Mac admins can export its settings as a profile for their MDM.\n\nIts releases have been downloaded more than 289,000 times, it has more than 6,100 stars on GitHub, and The Verge, Ars Technica, The Register and MacRumors have written about it. Funding pays for testing and updating it for every macOS beta and release, triaging issues and reviewing contributions.",
+      "webpageUrl": {
+        "url": "https://github.com/omlahore/RemoveMacAI",
+        "wellKnown": ""
+      },
+      "repositoryUrl": {
+        "url": "https://github.com/omlahore/RemoveMacAI",
+        "wellKnown": ""
+      },
+      "licenses": ["spdx:MIT"],
+      "tags": ["macos", "privacy", "apple-intelligence", "debloat", "swift", "command-line"]
+    }
+  ],
+  "funding": {
+    "channels": [
+      {
+        "guid": "github-sponsors",
+        "type": "payment-provider",
+        "address": "https://github.com/sponsors/omlahore",
+        "description": "GitHub Sponsors, monthly or one-time."
+      },
+      {
+        "guid": "bank",
+        "type": "bank",
+        "address": "",
+        "description": "For grants, email omlahore47@gmail.com for bank transfer details."
+      }
+    ],
+    "plans": [
+      {
+        "guid": "maintenance",
+        "status": "active",
+        "name": "Maintenance across macOS releases",
+        "description": "Part-time work testing and updating RemoveMacAI for each macOS beta and release, triaging issues and reviewing contributions.",
+        "amount": 1000,
+        "currency": "USD",
+        "frequency": "monthly",
+        "channels": ["github-sponsors", "bank"]
+      },
+      {
+        "guid": "goodwill",
+        "status": "active",
+        "name": "Goodwill",
+        "description": "Any amount, once.",
+        "amount": 0,
+        "currency": "USD",
+        "frequency": "one-time",
+        "channels": ["github-sponsors"]
+      }
+    ],
+    "history": []
+  }
+}
