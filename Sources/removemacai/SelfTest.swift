@@ -1,4 +1,5 @@
 import Foundation
+import UAF
 
 /// Checks the parts that must never go wrong, runnable without Xcode:
 /// `removemacai selftest`. Touches nothing on the system.
@@ -74,6 +75,11 @@ func selfTest() -> Bool {
     userInfo: [NSLocalizedDescriptionKey: "Could not eliminate as there are current locks", "currentLockUsage": [:]])
   check(Models.isLocked(lockError), "the asset service's lock error is recognised")
   check(!Models.isLocked(NSError(domain: "com.apple.UnifiedAssetFramework", code: -1)), "other errors are not taken for a lock")
+  check(UAFRefusedConnection(NSError(domain: NSCocoaErrorDomain, code: NSXPCConnectionInterrupted))
+    && UAFRefusedConnection(NSError(domain: NSCocoaErrorDomain, code: NSXPCConnectionInvalid))
+    && !UAFRefusedConnection(lockError) && !UAFRefusedConnection(nil)
+    && !UAFRefusedConnection(NSError(domain: NSCocoaErrorDomain, code: NSXPCConnectionReplyInvalid)),
+    "a refused asset service connection is sent again through siriknowledged, other errors are not")
   var attempts = 0
   var waits: [TimeInterval] = []
   let cleared = Models.retrying({ attempts += 1; return attempts < 3 ? .locked : .done }, delays: [5, 15]) { waits.append($0) }

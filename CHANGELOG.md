@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Model removal works on macOS 27.3 again. Apple's asset service now only takes requests from apps Apple signed, so when it refuses, RemoveMacAI sends the same request through siriknowledged, which passes it on (#123). Found by pdfux.
+
 ## 1.2.1
 
 - The Storage page and `removemacai clean` mention sponsoring after a clean-up that got space back, the way a finished run already did, and the Help menu has a Sponsor RemoveMacAI item.

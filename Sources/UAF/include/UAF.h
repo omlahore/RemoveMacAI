@@ -13,7 +13,11 @@ int64_t UAFDownloadedBytes(NSString *assetSet, NSError *_Nullable *_Nullable err
 NSDictionary *_Nullable UAFInformation(NSError *_Nullable *_Nullable error);
 // Asks the asset service to remove the downloaded models of these sets.
 // An empty list is refused: the service reads a missing list as "every set".
+// When the asset service refuses the connection, as macOS 27.3 does for apps
+// Apple didn't sign, the request goes through siriknowledged instead.
 void UAFResetAssetSets(NSArray<NSString *> *assetSets,
                        void (^completion)(NSError *_Nullable error));
+// Whether an error means the asset service refused or dropped the connection.
+BOOL UAFRefusedConnection(NSError *_Nullable error);
 
 NS_ASSUME_NONNULL_END

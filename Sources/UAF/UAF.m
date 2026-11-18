@@ -7,6 +7,9 @@
 static NSString *const kFramework =
     @"/System/Library/PrivateFrameworks/UnifiedAssetFramework.framework/UnifiedAssetFramework";
 static NSString *const kService = @"com.apple.siri.uaf.subscription.service";
+// From macOS 27.3 only Apple-signed clients may use kService. siriknowledged's
+// service takes the same operations and passes them on to it (#123).
+static NSString *const kUserService = @"com.apple.siri.uaf.service";
 
 @interface NSObject (UAFPrivate)
 + (id)defaultManager;
@@ -67,17 +70,18 @@ NSDictionary *UAFInformation(NSError **error) {
   return nil;
 }
 
-void UAFResetAssetSets(NSArray<NSString *> *assetSets, void (^completion)(NSError *)) {
-  if (assetSets.count == 0) {
-    completion(UAFError(@"refusing to reset an empty list of asset sets"));
-    return;
-  }
+BOOL UAFRefusedConnection(NSError *error) {
+  return [error.domain isEqualToString:NSCocoaErrorDomain] &&
+         (error.code == NSXPCConnectionInterrupted || error.code == NSXPCConnectionInvalid);
+}
+
+static void Reset(NSString *service, NSArray<NSString *> *assetSets, void (^completion)(NSError *)) {
   Class interfaceClass = NSClassFromString(@"UAFXPCProxyServiceInterface");
   if (![interfaceClass respondsToSelector:@selector(defaultInterface)]) {
     completion(UAFError(@"asset service interface unavailable"));
     return;
   }
-  NSXPCConnection *connection = [[NSXPCConnection alloc] initWithMachServiceName:kService
+  NSXPCConnection *connection = [[NSXPCConnection alloc] initWithMachServiceName:service
                                                                         options:0];
   connection.remoteObjectInterface = [interfaceClass defaultInterface];
   [connection resume];
@@ -101,4 +105,18 @@ void UAFResetAssetSets(NSArray<NSString *> *assetSets, void (^completion)(NSErro
   id proxy = [connection remoteObjectProxyWithErrorHandler:^(NSError *e) { finish(e); }];
   [proxy operationWithConfig:@{@"Operation" : @"ResetAssetSets", @"AssetSets" : [assetSets copy]}
                   completion:^(NSError *e) { finish(e); }];
+}
+
+void UAFResetAssetSets(NSArray<NSString *> *assetSets, void (^completion)(NSError *)) {
+  if (assetSets.count == 0) {
+    completion(UAFError(@"refusing to reset an empty list of asset sets"));
+    return;
+  }
+  Reset(kService, assetSets, ^(NSError *e) {
+    if (UAFRefusedConnection(e)) {
+      Reset(kUserService, assetSets, completion);
+    } else {
+      completion(e);
+    }
+  });
 }
