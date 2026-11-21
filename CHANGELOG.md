@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.2
 
 - Model removal works on macOS 27.3 again. Apple's asset service now only takes requests from apps Apple signed, so when it refuses, RemoveMacAI sends the same request through siriknowledged, which passes it on (#123). Found by pdfux.
 
