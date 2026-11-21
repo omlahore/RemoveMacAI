@@ -210,6 +210,7 @@ enum Storage {
   static func clean(_ items: [StorageItem]) -> CleanResult {
     var result = CleanResult()
     var adminCommands: [String] = []
+    var reservedNames = Set<String>()
     let trash = home + "/.Trash"
     for item in items {
       switch item.kind {
@@ -229,7 +230,11 @@ enum Storage {
               continue
             }
             let name = (path as NSString).lastPathComponent
-            let target = trash + "/" + uniqueName(name, in: trash)
+            // These moves run later, in one batch, so a name picked for one item
+            // isn't in the Trash yet. Reserve it so a same-named item gets another.
+            let unique = uniqueName(name, in: trash, avoiding: reservedNames)
+            reservedNames.insert(unique)
+            let target = trash + "/" + unique
             adminCommands.append("/bin/mv -f \(Shell.quote(path)) \(Shell.quote(target))")
           }
         }
@@ -247,10 +252,10 @@ enum Storage {
     return result
   }
 
-  static func uniqueName(_ name: String, in folder: String) -> String {
+  static func uniqueName(_ name: String, in folder: String, avoiding taken: Set<String> = []) -> String {
     var candidate = name
     var n = 2
-    while FileManager.default.fileExists(atPath: folder + "/" + candidate) {
+    while FileManager.default.fileExists(atPath: folder + "/" + candidate) || taken.contains(candidate) {
       let ext = (name as NSString).pathExtension
       let base = (name as NSString).deletingPathExtension
       candidate = ext.isEmpty ? "\(base) \(n)" : "\(base) \(n).\(ext)"
